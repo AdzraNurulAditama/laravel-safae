@@ -13,14 +13,30 @@ class BookSubmissionController extends Controller
         'Horor', 'Petualangan', 'Komedi', 'Drama', 'Sejarah'
     ];
 
-    public function halamanTulis()
+    /**
+     * Untuk route resource (GET /tulis-buku)
+     */
+    public function index()
     {
         return view('user.tulis-buku', [
             'opsi_genre' => $this->opsi_genre
         ]);
     }
 
-    public function simpanBuku(Request $request)
+    /**
+     * Untuk route resource (GET /tulis-buku/create)
+     */
+    public function create()
+    {
+        return view('user.tulis-buku', [
+            'opsi_genre' => $this->opsi_genre
+        ]);
+    }
+
+    /**
+     * Simpan buku (POST)
+     */
+    public function store(Request $request)
     {
         $data_valid = $request->validate([
             'title' => 'required|string|max:255',
@@ -44,11 +60,10 @@ class BookSubmissionController extends Controller
         return redirect('/tulis-buku')->with('success', 'Buku berhasil dikirim! Mohon tunggu validasi dari Admin.');
     }
 
-
-
     /**
-     * 4. AKSI APPROVE (Setujui)
+     * ================= ADMIN =================
      */
+
     public function indexAdmin()
     {
         $semua_buku = Book::where('status', 'pending')
