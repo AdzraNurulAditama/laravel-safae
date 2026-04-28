@@ -12,36 +12,51 @@ use Illuminate\Support\Facades\Storage;
 class BookController extends Controller
 {
     /**
-     * Get all books with pagination
+     * Get all books
      */
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 15);
-        $search = $request->get('search');
-        $genre = $request->get('genre');
-        $status = $request->get('status');
+        $search  = $request->get('search');
+        $genre   = $request->get('genre');
+        $status  = $request->get('status');
 
-        $query = Book::with(['reviews', 'komentar']);
+        $query = Book::select(
+            'id',
+            'title',
+            'author',
+            'genre',
+            'year',
+            'description',
+            'status',
+            'content',
+            'image_path'
+        );
 
-        // Search by title or author
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('author', 'like', "%{$search}%");
             });
         }
 
-        // Filter by genre
         if ($genre) {
             $query->where('genre', $genre);
         }
 
-        // Filter by status
         if ($status) {
             $query->where('status', $status);
         }
 
         $books = $query->paginate($perPage);
+
+        // 🔥 UBAH image_path → URL LENGKAP
+        $books->getCollection()->transform(function ($book) {
+            $book->image_path = $book->image_path
+                ? asset('storage/' . $book->image_path)
+                : '';
+            return $book;
+        });
 
         return ResponseHelper::success($books, 'Books retrieved successfully');
     }
@@ -51,126 +66,146 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with(['reviews.user', 'komentar.user', 'readingHistories'])
-                    ->findOrFail($id);
+        $book = Book::select(
+            'id',
+            'title',
+            'author',
+            'genre',
+            'year',
+            'description',
+            'status',
+            'content',
+            'image_path'
+        )->findOrFail($id);
 
-        return ResponseHelper::success($book, 'Book retrieved successfully');
+        return ResponseHelper::success([
+            'id'          => $book->id,
+            'title'       => $book->title,
+            'author'      => $book->author,
+            'genre'       => $book->genre,
+            'year'        => $book->year,
+            'description' => $book->description,
+            'status'      => $book->status,
+            'content'     => $book->content,
+            // 🔥 URL LENGKAP
+            'image_path'  => $book->image_path
+                ? asset('storage/' . $book->image_path)
+                : '',
+        ], 'Book retrieved successfully');
     }
 
     /**
-     * Create new book (Admin only)
+     * Store book
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
-            'genre' => 'required|string|max:100',
-            'year' => 'required|integer|min:1000|max:' . (date('Y') + 1),
+            'title'       => 'required|string|max:255',
+            'author'      => 'required|string|max:255',
+            'genre'       => 'required|string|max:100',
+            'year'        => 'required|integer|min:1000|max:' . (date('Y') + 1),
             'description' => 'required|string',
-            'status' => 'required|in:available,unavailable',
-            'content' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status'      => 'required|in:available,unavailable',
+            'content'     => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
             return ResponseHelper::error('Validation Error', 422, $validator->errors());
         }
 
-        $data = $request->only(['title', 'author', 'genre', 'year', 'description', 'status', 'content']);
+        $data = $request->only([
+            'title',
+            'author',
+            'genre',
+            'year',
+            'description',
+            'status',
+            'content'
+        ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('books', 'public');
-            $data['image_path'] = $imagePath;
+            // 🔥 SIMPAN PATH SAJA
+            $data['image_path'] = $request
+                ->file('image')
+                ->store('covers', 'public');
         }
 
         $book = Book::create($data);
+
+        // 🔥 RESPONSE URL LENGKAP
+        $book->image_path = $book->image_path
+            ? asset('storage/' . $book->image_path)
+            : '';
 
         return ResponseHelper::success($book, 'Book created successfully', 201);
     }
 
     /**
-     * Update book (Admin only)
+     * Update book
      */
     public function update(Request $request, $id)
     {
         $book = Book::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|string|max:255',
-            'author' => 'sometimes|string|max:255',
-            'genre' => 'sometimes|string|max:100',
-            'year' => 'sometimes|integer|min:1000|max:' . (date('Y') + 1),
+            'title'       => 'sometimes|string|max:255',
+            'author'      => 'sometimes|string|max:255',
+            'genre'       => 'sometimes|string|max:100',
+            'year'        => 'sometimes|integer|min:1000|max:' . (date('Y') + 1),
             'description' => 'sometimes|string',
-            'status' => 'sometimes|in:available,unavailable',
-            'content' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status'      => 'sometimes|in:available,unavailable',
+            'content'     => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
             return ResponseHelper::error('Validation Error', 422, $validator->errors());
         }
 
-        $data = $request->only(['title', 'author', 'genre', 'year', 'description', 'status', 'content']);
+        $data = $request->only([
+            'title',
+            'author',
+            'genre',
+            'year',
+            'description',
+            'status',
+            'content'
+        ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($book->image_path) {
+
+            if ($book->image_path && Storage::disk('public')->exists($book->image_path)) {
                 Storage::disk('public')->delete($book->image_path);
             }
-            
-            $imagePath = $request->file('image')->store('books', 'public');
-            $data['image_path'] = $imagePath;
+
+            $data['image_path'] = $request
+                ->file('image')
+                ->store('covers', 'public');
         }
 
         $book->update($data);
+
+        $book->image_path = $book->image_path
+            ? asset('storage/' . $book->image_path)
+            : '';
 
         return ResponseHelper::success($book, 'Book updated successfully');
     }
 
     /**
-     * Delete book (Admin only)
+     * Delete book
      */
     public function destroy($id)
     {
         $book = Book::findOrFail($id);
 
-        // Delete image if exists
-        if ($book->image_path) {
+        if ($book->image_path && Storage::disk('public')->exists($book->image_path)) {
             Storage::disk('public')->delete($book->image_path);
         }
 
         $book->delete();
 
         return ResponseHelper::success(null, 'Book deleted successfully');
-    }
-
-    /**
-     * Get popular books
-     */
-    public function popular()
-    {
-        $books = Book::withCount('reviews')
-                     ->withCount('readingHistories')
-                     ->orderBy('reviews_count', 'desc')
-                     ->orderBy('reading_histories_count', 'desc')
-                     ->limit(10)
-                     ->get();
-
-        return ResponseHelper::success($books, 'Popular books retrieved successfully');
-    }
-
-    /**
-     * Get latest books
-     */
-    public function latest()
-    {
-        $books = Book::orderBy('created_at', 'desc')
-                     ->limit(10)
-                     ->get();
-
-        return ResponseHelper::success($books, 'Latest books retrieved successfully');
     }
 }

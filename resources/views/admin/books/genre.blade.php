@@ -83,7 +83,11 @@
 
                     <div class="card-footer action-buttons">
                         {{-- VIEW --}}
+<<<<<<< HEAD
                         <a href="{{ route('admin.books.show', $book->id) }}"
+=======
+                        <a href="{{ route('admin.genre.index', $book->id) }}"
+>>>>>>> 239ecb688c45ea27cd6cbac882aaa3fd5327a835
                            class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i>
                         </a>
@@ -149,7 +153,11 @@
 
                     <div class="card-footer action-buttons">
                         {{-- VIEW --}}
+<<<<<<< HEAD
                         <a href="{{ route('admin.books.show', $book->id) }}"
+=======
+                        <a href="{{ route('admin.genre.index', $book->id) }}"
+>>>>>>> 239ecb688c45ea27cd6cbac882aaa3fd5327a835
                            class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i>
                         </a>
