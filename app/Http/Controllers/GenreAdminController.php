@@ -10,30 +10,43 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class GenreAdminController extends Controller
 {
     private $genre_options = [
-        'Pemrograman', 'Novel', 'Hobi', 'Horror', 'Romance', 
-        'Action', 'Komedi', 'Sci-Fi', 'Fiksi', 'Mystery'
+        'Pemrograman',
+        'Novel',
+        'Hobi',
+        'Horror',
+        'Romance',
+        'Action',
+        'Komedi',
+        'Sci-Fi',
+        'Fiksi',
+        'Mystery'
     ];
-
 
     public function daftarBuku(Request $request)
     {
         $semua_genre = Book::where('status', 'approved')
-                          ->select('genre')
-                          ->distinct()
-                          ->pluck('genre');
+            ->select('genre')
+            ->distinct()
+            ->pluck('genre');
 
         $filter_genre = $request->input('genre');
 
         $query_buku = Book::where('status', 'approved')
-                          ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         $buku_tampil = collect();
         $buku_per_genre = collect();
 
         if (!empty($filter_genre)) {
-            $buku_tampil = $query_buku->where('genre', $filter_genre)->paginate(8);
+
+            $buku_tampil = $query_buku
+                ->where('genre', $filter_genre)
+                ->paginate(8);
+
         } else {
+
             $semua_buku = $query_buku->get();
+
             $buku_per_genre = $semua_buku->groupBy('genre');
         }
 
@@ -45,6 +58,11 @@ class GenreAdminController extends Controller
         ]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN TAMBAH
+    |--------------------------------------------------------------------------
+    */
     public function halamanTambah()
     {
         return view('admin.books.create-book', [
@@ -52,6 +70,11 @@ class GenreAdminController extends Controller
         ]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | SIMPAN BUKU
+    |--------------------------------------------------------------------------
+    */
     public function simpanBuku(Request $request)
     {
         $data_valid = $request->validate([
@@ -64,22 +87,69 @@ class GenreAdminController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {       //cek apakah user upload foto
-            $path = $request->file('image')->store('covers', 'public');//ambil file nya gambar yang diupload
+        if ($request->hasFile('image')) {
+
+            $path = $request->file('image')->store('covers', 'public');
+
             $data_valid['image_path'] = '/storage/' . $path;
         }
 
         $data_valid['status'] = 'approved';
-        
+
         Book::create($data_valid);
 
         return redirect('/admin/genre')
-               ->with('success', 'Buku berhasil ditambahkan! Status: Menunggu Persetujuan');
+            ->with('success', 'Buku berhasil ditambahkan!');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | SHOW DETAIL BUKU
+    |--------------------------------------------------------------------------
+    */
+    public function show($id)
+    {
+        $buku = Book::findOrFail($id);
+
+        $arrayKonten = explode("\n", $buku->content);
+
+        $itemPerHalaman = 20;
+
+        $dataPaginasi = new LengthAwarePaginator(
+            collect($arrayKonten)->forPage(
+                request()->get('page', 1),
+                $itemPerHalaman
+            ),
+            count($arrayKonten),
+            $itemPerHalaman,
+            request()->get('page', 1),
+            [
+                'path' => request()->url(),
+                'query' => request()->query()
+            ]
+        );
+
+        $kontenAkhir = nl2br(
+            e(
+                implode("\n", $dataPaginasi->items())
+            )
+        );
+
+        return view('admin.books.show-book', [
+            'book' => $buku,
+            'paginatedData' => $dataPaginasi,
+            'finalContent' => $kontenAkhir,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN EDIT
+    |--------------------------------------------------------------------------
+    */
     public function halamanEdit($id)
     {
-        $buku = Book::findOrFail($id);//mencari buku didatabse berdasarkan id
+        $buku = Book::findOrFail($id);
 
         return view('admin.books.edit', [
             'book' => $buku,
@@ -87,7 +157,12 @@ class GenreAdminController extends Controller
         ]);
     }
 
-    public function perbaruiBuku(Request $request, $id) //data form dan  id
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE BUKU
+    |--------------------------------------------------------------------------
+    */
+    public function perbaruiBuku(Request $request, $id)
     {
         $buku = Book::findOrFail($id);
 
@@ -101,57 +176,55 @@ class GenreAdminController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {//cek kalau dia upload kalau gk maka di skip
-            if ($buku->image_path) {   // cek data lama 
-                $path_lama = str_replace('/storage/', '', $buku->image_path);
-                Storage::disk('public')->delete($path_lama);//akses path trus hapus
+        if ($request->hasFile('image')) {
+
+            if ($buku->image_path) {
+
+                $path_lama = str_replace(
+                    '/storage/',
+                    '',
+                    $buku->image_path
+                );
+
+                Storage::disk('public')->delete($path_lama);
             }
 
             $path = $request->file('image')->store('covers', 'public');
+
             $data_valid['image_path'] = '/storage/' . $path;
         }
 
-        $buku->update($data_valid);//92
+        $buku->update($data_valid);
 
         return redirect('/admin/genre?genre=' . urlencode($request->genre))
-               ->with('success', 'Data buku berhasil diperbarui!');
+            ->with('success', 'Data buku berhasil diperbarui!');
     }
 
-    public function lihatBuku($id)
-    {
-        $buku = Book::findOrFail($id);
-        
-        $arrayKonten = explode("\n", $buku->content);
-        $itemPerHalaman = 20;
-        
-        $dataPaginasi = new \Illuminate\Pagination\LengthAwarePaginator(
-            collect($arrayKonten)->forPage(request()->get('page', 1), $itemPerHalaman),
-            count($arrayKonten),
-            $itemPerHalaman,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-        
-        $kontenAkhir = nl2br(e(implode("\n", $dataPaginasi->items())));
-        
-        return view('admin.books.show-book', [
-            'book' => $buku,
-            'paginatedData' => $dataPaginasi,
-            'finalContent' => $kontenAkhir,
-        ]);
-    }
-
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS BUKU
+    |--------------------------------------------------------------------------
+    */
     public function hapusBuku(Request $request)
     {
         $buku = Book::findOrFail($request->id);
 
-        if ($buku->image_path) {//punya gambar cover?
-            $path_gambar = str_replace('/storage/', '', $buku->image_path);
+        if ($buku->image_path) {
+
+            $path_gambar = str_replace(
+                '/storage/',
+                '',
+                $buku->image_path
+            );
+
             Storage::disk('public')->delete($path_gambar);
         }
 
         $buku->delete();
 
-        return back()->with('success', 'Buku berhasil dihapus permanen dari database!');
+        return back()->with(
+            'success',
+            'Buku berhasil dihapus permanen dari database!'
+        );
     }
 }
