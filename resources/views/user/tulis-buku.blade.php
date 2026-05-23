@@ -1,315 +1,704 @@
 @extends('layouts.app')
 
-@section('title', 'Tulis Buku Baru')
+@section('title', 'Tulis Buku Baru - Safae')
 
 @section('content')
+
 <style>
-    .writing-container {
-        max-width: 1000px;
-        margin: 0 auto;
+
+    /* ================= CONTAINER & CARD ================= */
+
+    .writing-container{
+        max-width:900px;
+        margin:0 auto;
     }
-    
-    .writing-card {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+
+    .writing-card{
+        background:#1e293b;
+
+        border:1px solid #334155;
+
+        border-radius:20px;
+
+        box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+        overflow:hidden;
     }
-    
-    .card-header-custom {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px 20px 0 0 !important;
-        padding: 25px;
+
+    .card-header-custom{
+        background:transparent;
+
+        border-bottom:1px solid #334155;
+
+        padding:25px 30px;
     }
-    
-    .form-control, .form-select {
-        border-radius: 10px;
-        border: 2px solid #e9ecef;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+
+    .page-title{
+        color:#f1f5f9;
+
+        font-weight:800;
+
+        margin-bottom:5px;
     }
-    
-    .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+
+    /* ================= INFO BOX ================= */
+
+    .info-box{
+        background:rgba(56,189,248,.1);
+
+        border-left:4px solid #38bdf8;
+
+        color:#e2e8f0;
+
+        padding:15px 20px;
+
+        border-radius:0 12px 12px 0;
+
+        margin-bottom:25px;
     }
-    
-    .form-label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 8px;
+
+    /* ================= FORM ELEMENTS ================= */
+
+    .form-label{
+        color:#e2e8f0;
+
+        font-weight:600;
+
+        font-size:.95rem;
+
+        margin-bottom:10px;
     }
-    
-    textarea.form-control {
-        min-height: 300px;
-        font-family: 'Georgia', serif;
-        font-size: 16px;
-        line-height: 1.8;
+
+    .form-control,
+    .form-select{
+        background-color:#0f172a;
+
+        color:#f8fafc;
+
+        border:1px solid #334155;
+
+        border-radius:12px;
+
+        padding:14px 18px;
+
+        transition:.3s ease;
     }
-    
-    .btn-submit {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-        padding: 15px 40px;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: all 0.3s ease;
+
+    .form-control:focus,
+    .form-select:focus{
+        border-color:#38bdf8;
+
+        box-shadow:0 0 0 3px rgba(56,189,248,.15);
+
+        outline:none;
+
+        color:#fff;
     }
-    
-    .btn-submit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+
+    .form-control::placeholder{
+        color:#64748b;
     }
-    
-    .info-box {
-        background: #f8f9fa;
-        border-left: 4px solid #667eea;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 25px;
+
+    .form-select{
+        appearance:none;
+
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+
+        background-repeat:no-repeat;
+
+        background-position:right 1rem center;
+
+        background-size:16px 12px;
     }
-    
-    .upload-area {
-        border: 2px dashed #dee2e6;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        transition: all 0.3s ease;
-        cursor: pointer;
+
+    textarea.form-control{
+        min-height:350px;
+
+        line-height:1.8;
+
+        resize:vertical;
     }
-    
-    .upload-area:hover {
-        border-color: #667eea;
-        background: #f8f9fa;
+
+    /* ================= UPLOAD ================= */
+
+    .upload-area{
+        background:#0f172a;
+
+        border:2px dashed #334155;
+
+        border-radius:14px;
+
+        padding:40px 20px;
+
+        text-align:center;
+
+        transition:.3s ease;
+
+        cursor:pointer;
+
+        color:#94a3b8;
     }
-    
-    .preview-image {
-        max-width: 200px;
-        max-height: 300px;
-        margin-top: 15px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    .upload-area:hover{
+        border-color:#38bdf8;
+
+        background:rgba(56,189,248,.05);
+
+        color:#38bdf8;
     }
+
+    .preview-image{
+        max-width:200px;
+        max-height:280px;
+
+        margin-top:20px;
+
+        border-radius:12px;
+
+        box-shadow:0 10px 25px rgba(0,0,0,.3);
+
+        border:1px solid #334155;
+
+        object-fit:cover;
+    }
+
+    /* ================= BUTTON ================= */
+
+    .btn-submit{
+        background:#38bdf8;
+
+        color:#0f172a;
+
+        border:none;
+
+        padding:16px 30px;
+
+        border-radius:14px;
+
+        font-weight:700;
+
+        font-size:1.05rem;
+
+        transition:.3s ease;
+
+        width:100%;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        gap:10px;
+    }
+
+    .btn-submit:hover{
+        background:#7dd3fc;
+
+        transform:translateY(-2px);
+
+        box-shadow:0 10px 20px rgba(56,189,248,.2);
+    }
+
+    .btn-back{
+        color:#94a3b8;
+
+        text-decoration:none;
+
+        font-weight:600;
+
+        transition:.3s;
+    }
+
+    .btn-back:hover{
+        color:#f1f5f9;
+    }
+
+    /* ================= ALERT ================= */
+
+    .alert-success-custom{
+        background:rgba(34,197,94,.1);
+
+        border:1px solid rgba(34,197,94,.3);
+
+        color:#4ade80;
+
+        border-radius:12px;
+    }
+
+    .alert-danger-custom{
+        background:rgba(248,113,113,.1);
+
+        border:1px solid rgba(248,113,113,.3);
+
+        color:#f87171;
+
+        border-radius:12px;
+    }
+
+    /* ================= GUIDE SECTION ================= */
+
+    .guide-card{
+        background:rgba(255,255,255,.03);
+
+        border:1px solid #334155;
+
+        border-radius:18px;
+
+        padding:20px;
+
+        height:100%;
+
+        transition:.25s ease;
+    }
+
+    .guide-card:hover{
+        border-color:#38bdf8;
+
+        transform:translateY(-4px);
+
+        background:rgba(56,189,248,.05);
+    }
+
+    .guide-title{
+        color:#f8fafc;
+
+        font-weight:700;
+
+        font-size:1.05rem;
+    }
+
+    .guide-text{
+        color:#cbd5e1;
+
+        font-size:.92rem;
+
+        line-height:1.7;
+
+        margin-top:8px;
+    }
+
 </style>
 
-<div class="container writing-container my-5 py-4">
-    <div class="card writing-card">
-        <div class="card-header card-header-custom">
+<div class="container-fluid writing-container">
+
+    <!-- ================= FORM CARD ================= -->
+
+    <div class="card writing-card mb-4">
+
+        <div class="card-header-custom">
+
             <div class="d-flex align-items-center">
-                <i class="fas fa-pen-fancy fa-2x me-3"></i>
+
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+
+                    <i class="fa-solid fa-pen-nib fa-2x text-primary"></i>
+
+                </div>
+
                 <div>
-                    <h3 class="mb-0">Tulis Buku Baru</h3>
-                    <p class="mb-0 opacity-75">Bagikan cerita dan karya Anda dengan dunia</p>
+
+                    <h3 class="page-title">
+                        Tulis Buku Baru
+                    </h3>
+
+                    <p class="mb-0 text-muted">
+                        Bagikan imajinasi, cerita, dan karya Anda dengan dunia.
+                    </p>
+
                 </div>
+
             </div>
+
         </div>
-        
-        <div class="card-body p-4">
+
+        <div class="card-body p-4 p-md-5">
+
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <strong>Berhasil!</strong> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                <div class="alert alert-success-custom d-flex align-items-center mb-4">
+
+                    <i class="fa-solid fa-circle-check fa-lg me-3"></i>
+
+                    <div>
+                        {{ session('success') }}
+                    </div>
+
                 </div>
+
             @endif
 
             @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Terjadi kesalahan:</strong>
-                    <ul class="mb-0 mt-2">
+
+                <div class="alert alert-danger-custom mb-4">
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i>
+
+                        <strong>
+                            Terjadi kesalahan:
+                        </strong>
+
+                    </div>
+
+                    <ul class="mb-0 ps-4">
+
                         @foreach ($errors->all() as $error)
+
                             <li>{{ $error }}</li>
+
                         @endforeach
+
                     </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
                 </div>
+
             @endif
 
             <div class="info-box">
-                <i class="fas fa-info-circle me-2 text-primary"></i>
-                <strong>Info:</strong> Buku yang Anda kirim akan melalui proses validasi oleh admin sebelum ditampilkan di aplikasi.
+
+                <i class="fa-solid fa-circle-info me-2 text-primary"></i>
+
+                Buku yang Anda kirim akan melalui proses validasi oleh tim Safae sebelum dipublikasikan.
+
             </div>
 
-            <form action="{{ url('/tulis-buku/store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('/tulis-buku/store') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+
                 @csrf
-                
+
                 <div class="row g-4">
-                    <!-- Judul Buku -->
+
+                    <!-- JUDUL -->
                     <div class="col-md-6">
+
                         <label class="form-label">
-                            <i class="fas fa-heading me-2 text-primary"></i>Judul Buku
+
+                            <i class="fa-solid fa-heading me-2 text-primary"></i>
+
+                            Judul Buku
+
                         </label>
-                        <input type="text" 
-                               name="title" 
-                               class="form-control" 
-                               placeholder="Masukkan judul buku yang menarik..."
+
+                        <input type="text"
+                               name="title"
+                               class="form-control"
+                               placeholder="Masukkan judul yang menarik..."
                                value="{{ old('title') }}"
                                required>
+
                     </div>
 
-                    <!-- Penulis -->
+                    <!-- AUTHOR -->
                     <div class="col-md-6">
+
                         <label class="form-label">
-                            <i class="fas fa-user-edit me-2 text-primary"></i>Nama Penulis
+
+                            <i class="fa-solid fa-user-pen me-2 text-primary"></i>
+
+                            Nama Penulis
+
                         </label>
-                        <input type="text" 
-                               name="author" 
-                               class="form-control" 
-                               placeholder="Nama Anda sebagai penulis"
-                               value="{{ old('author', Auth::user()->name) }}"
+
+                        <input type="text"
+                               name="author"
+                               class="form-control"
+                               placeholder="Nama pena Anda"
+                               value="{{ old('author', Auth::user()->username ?? '') }}"
                                required>
+
                     </div>
 
-                    <!-- Genre -->
+                    <!-- GENRE -->
                     <div class="col-md-6">
+
                         <label class="form-label">
-                            <i class="fas fa-bookmark me-2 text-primary"></i>Genre
+
+                            <i class="fa-solid fa-layer-group me-2 text-primary"></i>
+
+                            Genre
+
                         </label>
-                        <select name="genre" class="form-select" required>
+
+                        <select name="genre"
+                                class="form-select"
+                                required>
+
                             <option value="">-- Pilih Genre --</option>
-                            <option value="Pemrograman" {{ old('genre') == 'Pemrograman' ? 'selected' : '' }}>Pemrograman</option>
-                            <option value="Novel" {{ old('genre') == 'Novel' ? 'selected' : '' }}>Novel</option>
-                            <option value="Hobi" {{ old('genre') == 'Hobi' ? 'selected' : '' }}>Hobi</option>
-                            <option value="Horror" {{ old('genre') == 'Horror' ? 'selected' : '' }}>Horror</option>
-                            <option value="Romance" {{ old('genre') == 'Romance' ? 'selected' : '' }}>Romantis</option>
-                            <option value="Fantasi" {{ old('genre') == 'Fantasi' ? 'selected' : '' }}>Fantasi</option>
-                            <option value="Komedi" {{ old('genre') == 'Komedi' ? 'selected' : '' }}>Komedi</option>
-                            <option value="Misteri" {{ old('genre') == 'Misteri' ? 'selected' : '' }}>Misteri</option>
-                            <option value="Biografi" {{ old('genre') == 'Biografi' ? 'selected' : '' }}>Biografi</option>
-                            <option value="Sejarah" {{ old('genre') == 'Sejarah' ? 'selected' : '' }}>Sejarah</option>
+
+                            <option value="Pemrograman">Pemrograman</option>
+                            <option value="Novel">Novel</option>
+                            <option value="Hobi">Hobi</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Romance">Romantis</option>
+                            <option value="Fantasi">Fantasi</option>
+                            <option value="Komedi">Komedi</option>
+                            <option value="Misteri">Misteri</option>
+
                         </select>
+
                     </div>
 
-                    <!-- Tahun Terbit -->
+                    <!-- YEAR -->
                     <div class="col-md-6">
+
                         <label class="form-label">
-                            <i class="fas fa-calendar-alt me-2 text-primary"></i>Tahun Terbit
+
+                            <i class="fa-regular fa-calendar-days me-2 text-primary"></i>
+
+                            Tahun Terbit
+
                         </label>
-                        <input type="number" 
-                               name="year" 
-                               class="form-control" 
+
+                        <input type="number"
+                               name="year"
+                               class="form-control"
                                value="{{ old('year', date('Y')) }}"
-                               min="1900" 
-                               max="{{ date('Y') }}"
                                required>
+
                     </div>
 
-                    <!-- Deskripsi Buku -->
+                    <!-- DESCRIPTION -->
                     <div class="col-12">
+
                         <label class="form-label">
-                            <i class="fas fa-align-left me-2 text-primary"></i>Deskripsi Singkat
+
+                            <i class="fa-solid fa-align-left me-2 text-primary"></i>
+
+                            Deskripsi / Sinopsis
+
                         </label>
-                        <textarea name="description" 
-                                  class="form-control" 
-                                  rows="3"
-                                  placeholder="Tulis ringkasan singkat tentang buku Anda (sinopsis, tema utama, dll)..."
+
+                        <textarea name="description"
+                                  class="form-control"
+                                  style="min-height:120px;"
+                                  placeholder="Tuliskan sinopsis singkat..."
                                   required>{{ old('description') }}</textarea>
-                        <small class="text-muted">Deskripsi ini akan muncul sebagai ringkasan buku</small>
+
                     </div>
 
-                    <!-- Cover Buku -->
+                    <!-- IMAGE -->
                     <div class="col-12">
+
                         <label class="form-label">
-                            <i class="fas fa-image me-2 text-primary"></i>Cover Buku
+
+                            <i class="fa-regular fa-image me-2 text-primary"></i>
+
+                            Cover Buku
+
                         </label>
-                        <div class="upload-area" onclick="document.getElementById('imageUpload').click()">
-                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                            <p class="mb-0">Klik atau drag & drop untuk upload cover buku</p>
-                            <small class="text-muted">Format: JPG, PNG (Max: 2MB)</small>
+
+                        <div class="upload-area"
+                             onclick="document.getElementById('imageUpload').click()">
+
+                            <i class="fa-solid fa-cloud-arrow-up fa-3x mb-3"
+                               style="color:#475569;"></i>
+
+                            <h5 class="text-white mb-1">
+                                Klik untuk upload cover buku
+                            </h5>
+
+                            <small class="text-muted">
+                                JPG, PNG, WEBP (Max 2MB)
+                            </small>
+
                         </div>
-                        <input type="file" 
-                               name="image" 
+
+                        <input type="file"
+                               name="image"
                                id="imageUpload"
-                               class="d-none" 
+                               class="d-none"
                                accept="image/*"
                                onchange="previewImage(event)">
-                        <div id="imagePreview" class="text-center"></div>
+
+                        <div id="imagePreview"
+                             class="text-center"></div>
+
                     </div>
 
-                    <!-- Isi Buku -->
-                    <div class="col-12">
+                    <!-- CONTENT -->
+                    <div class="col-12 mt-4">
+
                         <label class="form-label">
-                            <i class="fas fa-book me-2 text-primary"></i>Isi Buku / Konten
+
+                            <i class="fa-solid fa-book-open-reader me-2 text-primary"></i>
+
+                            Isi Buku / Naskah
+
                         </label>
-                        <textarea name="content" 
-                                  class="form-control" 
-                                  placeholder="Mulai menulis cerita Anda di sini...&#10;&#10;Contoh:&#10;&#10;Bab 1: Awal Petualangan&#10;&#10;Suatu hari di sebuah desa kecil..."
+
+                        <textarea name="content"
+                                  class="form-control"
+                                  placeholder="Mulai menulis cerita Anda..."
                                   required>{{ old('content') }}</textarea>
-                        <div class="mt-2 text-end">
-                            <small class="text-muted">
-                                <i class="fas fa-lightbulb me-1"></i>
-                                Tips: Gunakan paragraf yang jelas dan menarik untuk pembaca
-                            </small>
-                        </div>
+
                     </div>
 
-                    <!-- Submit Button -->
-                    <div class="col-12 text-center mt-4">
-                        <button type="submit" class="btn btn-primary btn-submit btn-lg">
-                            <i class="fas fa-paper-plane me-2"></i>Kirim Naskah untuk Validasi
+                    <!-- BUTTON -->
+                    <div class="col-12 mt-5">
+
+                        <button type="submit"
+                                class="btn-submit">
+
+                            <i class="fa-solid fa-paper-plane"></i>
+
+                            Kirim Naskah Buku
+
                         </button>
-                        <div class="mt-3">
-                            <a href="{{ url('/dashboard') }}" class="text-muted">
-                                <i class="fas fa-arrow-left me-1"></i>Kembali ke Dashboard
+
+                        <div class="text-center mt-4">
+
+                            <a href="{{ route('user.dashboard') }}"
+                               class="btn-back">
+
+                                <i class="fa-solid fa-arrow-left me-1"></i>
+
+                                Kembali ke Dashboard
+
                             </a>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
 
-    <!-- Panduan Menulis -->
-    <div class="card writing-card mt-4">
+    <!-- ================= GUIDE ================= -->
+
+    <div class="card writing-card mb-5">
+
         <div class="card-body p-4">
-            <h5 class="mb-3">
-                <i class="fas fa-question-circle me-2 text-info"></i>Panduan Menulis
+
+            <h5 class="text-white fw-bold mb-4">
+
+                <i class="fa-regular fa-lightbulb me-2 text-warning"></i>
+
+                Panduan Penulisan Safae
+
             </h5>
-            <div class="row">
+
+            <div class="row g-4">
+
+                <!-- ITEM 1 -->
                 <div class="col-md-4">
-                    <div class="d-flex mb-3">
-                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
-                        <div>
-                            <strong>Judul Menarik</strong>
-                            <p class="text-muted mb-0">Buatlah judul yang eye-catching dan menggambarkan isi buku</p>
+
+                    <div class="guide-card">
+
+                        <div class="d-flex align-items-start">
+
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1 fs-5"></i>
+
+                            <div>
+
+                                <strong class="guide-title">
+                                    Judul Memikat
+                                </strong>
+
+                                <p class="guide-text mb-0">
+                                    Buatlah judul yang eye-catching namun tetap merepresentasikan isi cerita Anda.
+                                </p>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
+                <!-- ITEM 2 -->
                 <div class="col-md-4">
-                    <div class="d-flex mb-3">
-                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
-                        <div>
-                            <strong>Cover Berkualitas</strong>
-                            <p class="text-muted mb-0">Gunakan cover yang menarik dan berkualitas baik</p>
+
+                    <div class="guide-card">
+
+                        <div class="d-flex align-items-start">
+
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1 fs-5"></i>
+
+                            <div>
+
+                                <strong class="guide-title">
+                                    Resolusi Cover
+                                </strong>
+
+                                <p class="guide-text mb-0">
+                                    Gunakan rasio potret seperti 3:4 dengan resolusi tinggi agar cover tetap tajam.
+                                </p>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
+                <!-- ITEM 3 -->
                 <div class="col-md-4">
-                    <div class="d-flex mb-3">
-                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
-                        <div>
-                            <strong>Konten Original</strong>
-                            <p class="text-muted mb-0">Pastikan konten adalah karya original Anda sendiri</p>
+
+                    <div class="guide-card">
+
+                        <div class="d-flex align-items-start">
+
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1 fs-5"></i>
+
+                            <div>
+
+                                <strong class="guide-title">
+                                    Orisinalitas
+                                </strong>
+
+                                <p class="guide-text mb-0">
+                                    Pastikan naskah merupakan karya asli Anda dan tidak melanggar hak cipta.
+                                </p>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
 <script>
-function previewImage(event) {
+
+function previewImage(event){
+
     const reader = new FileReader();
-    reader.onload = function() {
+
+    reader.onload = function(){
+
         const preview = document.getElementById('imagePreview');
+
         preview.innerHTML = `
-            <img src="${reader.result}" class="preview-image" alt="Preview Cover">
-            <p class="mt-2 text-success"><i class="fas fa-check-circle me-2"></i>Cover berhasil dipilih</p>
+            <img src="${reader.result}" class="preview-image">
+            <div class="mt-3 text-success fw-bold">
+                <i class="fa-solid fa-check-circle me-1"></i>
+                Cover berhasil dipilih
+            </div>
         `;
     }
-    reader.readAsDataURL(event.target.files[0]);
+
+    if(event.target.files[0]){
+        reader.readAsDataURL(event.target.files[0]);
+    }
 }
+
 </script>
+
 @endsection

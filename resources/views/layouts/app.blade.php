@@ -504,6 +504,15 @@
 
     </a>
 
+    <!-- MY RESUMES -->
+    <a href="{{ route('resume.my') }}"
+       class="{{ request()->is('my-resumes') ? 'active' : '' }}">
+
+        <i class="fa-solid fa-book-open-reader"></i>
+        Resume Saya
+
+    </a>
+
     <div class="sidebar-title">
         Lainnya
     </div>

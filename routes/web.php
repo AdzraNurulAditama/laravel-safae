@@ -31,6 +31,7 @@ use App\Http\Controllers\AdminBukuFavoritController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Middleware\AdminOnly;
+use App\Http\Controllers\BookResumeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/full-bacaan/{id}', [FullBacaanController::class, 'show'])
         ->name('fullbacaan.show');
 
+        /*
+|--------------------------------------------------------------------------
+| BOOK RESUME
+|--------------------------------------------------------------------------
+*/
+
+    Route::get('/book/{book}/resume/create',
+        [BookResumeController::class, 'create']
+    )->name('resume.create');
+
+    Route::post('/book/{book}/resume/store',
+        [BookResumeController::class, 'store']
+    )->name('resume.store');
+
+    Route::get('/my-resumes',
+        [BookResumeController::class, 'myResumes']
+    )->name('resume.my');
+
+    Route::get('/resume/{resume}',
+        [BookResumeController::class, 'show']
+    )->name('resume.show');
+
+    Route::delete('/resume/{resume}',
+        [BookResumeController::class, 'destroy']
+    )->name('resume.destroy');
     /*
     |--------------------------------------------------------------------------
     | FAVORIT
