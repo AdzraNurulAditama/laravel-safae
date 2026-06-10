@@ -32,6 +32,8 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Middleware\AdminOnly;
 use App\Http\Controllers\BookResumeController;
+  use App\Http\Controllers\PromotionController;
+  use App\Http\Controllers\AdminPromotionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -252,6 +254,17 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/notifikasi/read/{id}', [NotificationController::class, 'markAsRead'])
         ->name('notifikasi.read');
+
+     /*
+        |--------------------------------------------------------------------------
+        | PROMOSI DI DASHBOARD
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/promotions', [PromotionController::class, 'index'])
+    ->name('promotions.index');
+
+Route::get('/promotions/{id}', [PromotionController::class, 'show'])
+    ->name('promotions.show');
 });
 
 /*
@@ -423,6 +436,30 @@ Route::middleware(['auth', AdminOnly::class])
 
         Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy'])
             ->name('notifications.destroy');
+
+        /*
+|--------------------------------------------------------------------------
+| KELOLA PROMOSI
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/promotions', [AdminPromotionController::class, 'index'])
+    ->name('promotions.index');
+
+Route::get('/promotions/create', [AdminPromotionController::class, 'create'])
+    ->name('promotions.create');
+
+Route::post('/promotions/store', [AdminPromotionController::class, 'store'])
+    ->name('promotions.store');
+
+Route::get('/promotions/{id}/edit', [AdminPromotionController::class, 'edit'])
+    ->name('promotions.edit');
+
+Route::post('/promotions/{id}/update', [AdminPromotionController::class, 'update'])
+    ->name('promotions.update');
+
+Route::delete('/promotions/{id}', [AdminPromotionController::class, 'destroy'])
+    ->name('promotions.destroy');
     });
 
 /*

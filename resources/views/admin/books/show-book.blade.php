@@ -170,11 +170,11 @@
 
                 {{-- Action Buttons --}}
                 <div class="action-buttons text-center mt-4">
-                    <a href="{{ route('admin.buku.edit', $book->id) }}" class="btn btn-primary btn-sm w-100 mb-2">
+                    <a href="{{ route('admin.books.edit', $book->id) }}" class="btn btn-primary btn-sm w-100 mb-2">
                         <i class="fas fa-edit me-2"></i>Edit Buku
                     </a>
                     
-                    <form method="POST" action="{{ route('admin.buku.hapus') }}" 
+                    <form method="POST" action="{{ route('admin.books.delete') }}" 
                           onsubmit="return confirm('Yakin ingin menghapus buku ini?')" class="d-inline w-100">
                         @csrf
                         <input type="hidden" name="id" value="{{ $book->id }}">

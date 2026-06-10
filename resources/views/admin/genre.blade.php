@@ -66,7 +66,7 @@
                         <div class="card genre-card">
                             <div class="card-img-container">
                                 @if (!empty($book['image_path']))
-                                    <img src="{{ $book['image_path'] }}" class="card-img-top">
+                                    <img src="{{ asset($book['image_path']) }}" class="card-img-top">
                                 @else
                                     <div class="text-center text-muted">
                                         <i class="fas fa-book fa-3x mb-2"></i>

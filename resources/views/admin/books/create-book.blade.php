@@ -33,8 +33,10 @@
                     </div>
                     <div class="card-body">
                         
-                       <form method="POST" action="/admin/books/store">
-                             @csrf
+                       <form method="POST"
+      action="/admin/books/store"
+      enctype="multipart/form-data">
+    @csrf
                              
                             <div class="row">
                                 <div class="col-md-6">

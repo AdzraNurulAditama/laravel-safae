@@ -114,6 +114,12 @@
 </a>
 
 </li>
+{{-- KELOLA PROMOSI --}}
+<li class="{{ request()->is('admin/promotions*') ? 'active' : '' }}">
+    <a href="{{ route('admin.promotions.index') }}">
+        <i class="fa-solid fa-bullhorn"></i> Kelola Promosi
+    </a>
+</li>
     </ul>
 </nav>
 

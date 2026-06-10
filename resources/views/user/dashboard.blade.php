@@ -124,5 +124,67 @@
             </div>
         </div>
     </div>
+
+    
+    <!-- Info Komunitas & Lomba -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card dashboard-card">
+            <div class="card-header py-3">
+                <h5 class="section-title mb-0">
+                    <i class="fas fa-bullhorn me-2 text-warning"></i>
+                    Info Komunitas & Lomba
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    @forelse($promotions as $promo)
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-dark border-secondary h-100 shadow-sm">
+
+                                @if($promo->image)
+                                    <img src="{{ asset($promo->image) }}"
+                                         class="card-img-top"
+                                         alt="{{ $promo->title }}"
+                                         style="height:200px; object-fit:cover;">
+                                @endif
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="text-white">
+                                        {{ $promo->title }}
+                                    </h5>
+
+                                    <p class="text-muted small flex-grow-1">
+                                        {{ Str::limit($promo->short_description, 100) }}
+                                    </p>
+
+                                    @if($promo->event_date)
+                                        <small class="text-info mb-2">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            {{ \Carbon\Carbon::parse($promo->event_date)->format('d M Y') }}
+                                        </small>
+                                    @endif
+
+                                    <a href="{{ route('promotions.show', $promo->id) }}"
+                                       class="btn btn-primary btn-sm">
+                                        Baca Selengkapnya
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-secondary text-center">
+                                Belum ada informasi komunitas atau lomba.
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 @endsection
