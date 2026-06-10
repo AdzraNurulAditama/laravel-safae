@@ -61,6 +61,7 @@
         border-radius:999px;
         font-size:.75rem;
         font-weight:700;
+        z-index: 10;
     }
 
     .resume-content{
@@ -73,6 +74,15 @@
         color:white;
         line-height:1.4;
         margin-bottom:12px;
+    }
+
+    /* Efek hover ungu halus untuk link judul */
+    .resume-title a {
+        transition: color 0.2s ease;
+    }
+
+    .resume-title a:hover {
+        color: #c084fc !important;
     }
 
     .book-title{
@@ -95,6 +105,9 @@
         border-radius:14px;
         font-weight:700;
         transition:.25s;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
     }
 
     .btn-edit{
@@ -104,16 +117,19 @@
 
     .btn-edit:hover{
         background:#8b5cf6;
+        color:white;
     }
 
     .btn-delete{
         background:rgba(239,68,68,.1);
         color:#fca5a5;
         border:1px solid rgba(239,68,68,.2);
+        width: 100%;
     }
 
     .btn-delete:hover{
         background:rgba(239,68,68,.18);
+        color:#fca5a5;
     }
 
     .empty-box{
@@ -126,22 +142,16 @@
 </style>
 
 <div class="resume-page">
-
     <div class="container">
 
-        <!-- HEADER -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
-
             <div>
-
                 <h1 class="display-4 fw-black text-white mb-2">
                     Resume Saya
                 </h1>
-
                 <p class="text-secondary fs-5 mb-0">
                     Kumpulan resume dan pemikiran setelah membaca cerita.
                 </p>
-
             </div>
 
             <div class="px-4 py-3 rounded-4 fw-bold"
@@ -150,106 +160,86 @@
                     color:#d8b4fe;
                     border:1px solid rgba(168,85,247,.2);
                  ">
-
                 {{ $resumes->count() }} Resume
-
             </div>
-
         </div>
 
-        <!-- EMPTY -->
         @if($resumes->count() == 0)
-
             <div class="empty-box">
-
                 <div style="font-size:5rem;" class="mb-4">
                     📝
                 </div>
-
                 <h2 class="fw-bold text-white mb-3">
                     Belum Ada Resume
                 </h2>
-
                 <p class="text-secondary mb-0">
                     Selesaikan membaca buku lalu tulis resumemu.
                 </p>
-
             </div>
-
         @else
 
-            <!-- GRID -->
             <div class="row g-4">
-
                 @foreach($resumes as $resume)
-
                     <div class="col-md-6 col-lg-4">
-
                         <div class="resume-card h-100">
 
-                            <!-- COVER -->
                             <div class="cover-wrapper">
-
-                                <img src="{{ asset($resume->book->cover) }}">
-
+                                <img src="{{ $resume->book->image_path ? asset($resume->book->image_path) : 'https://via.placeholder.com/300x400?text=No+Cover' }}" alt="Cover Buku">
                                 <div class="cover-overlay"></div>
 
                                 @if($resume->has_spoiler)
-
                                     <div class="spoiler-badge">
                                         SPOILER
                                     </div>
-
                                 @endif
-
                             </div>
 
-                            <!-- CONTENT -->
                             <div class="resume-content">
-
                                 <div class="book-title">
                                     {{ $resume->book->title }}
                                 </div>
 
                                 <div class="resume-title">
-                                    {{ $resume->title ?? 'Tanpa Judul' }}
+                                    <a href="{{ route('bookresume.show', $resume->id) }}" style="color: white; text-decoration: none;">
+                                        {{ $resume->title ?? 'Tanpa Judul' }}
+                                    </a>
                                 </div>
 
                                 <div class="resume-date">
                                     {{ $resume->created_at->format('d M Y') }}
                                 </div>
 
-                                <div class="d-flex gap-3">
-
-                                    <button class="btn-custom btn-edit">
+                                <div class="d-flex gap-3 align-items-center">
+                                    
+                                    <a href="{{ route('bookresume.edit', $resume->id) }}" class="btn-custom btn-edit">
                                         Edit
-                                    </button>
+                                    </a>
 
-                                    <button class="btn-custom btn-delete">
-                                        Hapus
-                                    </button>
+                                    <form action="{{ route('bookresume.destroy', $resume->id) }}" 
+                                          method="POST" 
+                                          class="flex-grow-1 m-0" 
+                                          onsubmit="return confirm('Apakah kamu yakin ingin menghapus resume ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-custom btn-delete">
+                                            Hapus
+                                        </button>
+                                    </form>
 
                                 </div>
-
                             </div>
 
                         </div>
-
                     </div>
-
                 @endforeach
-
             </div>
 
-            <!-- PAGINATION -->
             <div class="mt-5">
                 {{ $resumes->links() }}
             </div>
-
         @endif
 
     </div>
-
 </div>
 
 @endsection

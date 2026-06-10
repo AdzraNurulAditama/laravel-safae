@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class AdminReviewController extends Controller
 {
+    // =====================================================
+    // TAMPILKAN SEMUA ULASAN BUKU (ADMIN)
+    // =====================================================
     public function index()
     {
         $reviews = Review::with(['user', 'book'])->latest()->get();
@@ -16,6 +19,9 @@ class AdminReviewController extends Controller
         ]);
     }
 
+    // =====================================================
+    // TAMPILKAN DETAIL ULASAN SATUAN (ADMIN)
+    // =====================================================
     public function show($id)
     {
         $review = Review::with(['user', 'book'])->findOrFail($id);
@@ -25,13 +31,16 @@ class AdminReviewController extends Controller
         ]);
     }
 
+    // =====================================================
+    // HAPUS DATA ULASAN (ADMIN)
+    // =====================================================
     public function destroy($id)
     {
-
         $review = Review::findOrFail($id);
-
         $review->delete();
 
-        return redirect('/admin/reviews');
+        // DI-FIX: Menggunakan route name dan menambahkan flash message success
+        return redirect()->route('admin.reviews.index')
+                         ->with('success', 'Ulasan buku berhasil dihapus dari sistem!');
     }
 }

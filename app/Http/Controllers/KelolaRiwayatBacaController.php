@@ -8,10 +8,8 @@ use App\Models\User;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
-
 class KelolaRiwayatBacaController extends Controller
 {
-
     public function index()
     {
         $histories = ReadingHistory::with(['user', 'book'])->get();
@@ -43,7 +41,7 @@ class KelolaRiwayatBacaController extends Controller
             'bukti_progress' => 'nullable|file|mimes:jpg,png,pdf,jpeg'
         ]);
 
-        $filename = null; //bikin variabel awal yang    di mana variabel awal nantinya tuh boleh null boleh ngga, makannya diisi null (kalo misal admin gamau upload apa2 tetep bisa)
+        $filename = null; //bikin variabel awal yang di mana variabel awal nantinya tuh boleh null boleh ngga, makannya diisi null (kalo misal admin gamau upload apa2 tetep bisa)
 
         if ($request->hasFile('bukti_progress')) {
             $filename = time() . '_' . $request->file('bukti_progress')->getClientOriginalName();
@@ -58,10 +56,10 @@ class KelolaRiwayatBacaController extends Controller
             'bukti_progress' => $filename,
         ]);
 
-            return redirect()->route('kelolariwayat.index')
+        // SUDAH DI-FIX: Ditambahkan prefiks 'admin.' agar searah dengan web.php
+        return redirect()->route('admin.kelolariwayat.index')
             ->with('success', 'Riwayat baca berhasil ditambahkan!');
     }
-
 
     public function edit($id)
     {
@@ -75,7 +73,6 @@ class KelolaRiwayatBacaController extends Controller
             'books' => $books,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -92,7 +89,6 @@ class KelolaRiwayatBacaController extends Controller
         if ($request->hasFile('bukti_progress')) {
 
             if ($history->bukti_progress && file_exists(public_path('uploads/bukti_progress/' . $history->bukti_progress))) {
-
                 unlink(public_path('uploads/bukti_progress/' . $history->bukti_progress));
             }
 
@@ -109,7 +105,7 @@ class KelolaRiwayatBacaController extends Controller
             'last_read_at' => $request->last_read_at,
         ]);
 
-            return redirect()->route('admin.kelolariwayat.index')
+        return redirect()->route('admin.kelolariwayat.index')
             ->with('success', 'Riwayat baca berhasil diperbarui!');
     }
 
@@ -125,7 +121,7 @@ class KelolaRiwayatBacaController extends Controller
 
         $history->delete();
 
-            return redirect()->route('admin.kelolariwayat.index')
+        return redirect()->route('admin.kelolariwayat.index')
             ->with('success', 'Riwayat baca berhasil dihapus!');
     }
 }

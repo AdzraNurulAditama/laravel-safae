@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tulis Resume - ' . $book->title)
+@section('title', 'Edit Resume - ' . $book->title)
 
 @section('content')
 
@@ -61,16 +61,15 @@
         box-shadow: 0 0 0 4px rgba(139,92,246,0.2);
     }
 
-        #editor {
-                background: white;
-                color: black;
-                /* Ubah border-radius agar hanya melengkung di bawah */
-                border-radius: 0 0 20px 20px; 
-                min-height: 350px;
-                overflow: hidden;
-            }
+    #editor {
+        background: white;
+        color: black;
+        border-radius: 0 0 20px 20px; 
+        min-height: 350px;
+        overflow: hidden;
+    }
 
-.ql-toolbar {
+    .ql-toolbar {
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
         background: #f8fafc;
@@ -136,9 +135,11 @@
             <div class="col-xl-9 col-lg-10">
 
                 <div class="glass-card p-4 mb-4 d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
-                            <img src="{{ $book->image_path ? asset($book->image_path) : 'https://via.placeholder.com/300x400?text=No+Cover' }}" alt="Cover Buku" class="book-cover-small">                    <div class="w-100 text-center text-md-start d-flex flex-column justify-content-center h-100 mt-2 mt-md-0">
+                    <img src="{{ $book->image_path ? asset($book->image_path) : 'https://via.placeholder.com/300x400?text=No+Cover' }}" alt="Cover Buku" class="book-cover-small">
+                    
+                    <div class="w-100 text-center text-md-start d-flex flex-column justify-content-center h-100 mt-2 mt-md-0">
                         <div class="mb-3">
-                            <span class="complete-badge">🎉 Buku Selesai Dibaca</span>
+                            <span class="complete-badge">🎉 Mengedit Resume</span>
                         </div>
                         <h1 class="fw-bold text-white mb-2 fs-3">
                             {{ $book->title }}
@@ -155,16 +156,15 @@
                 <div class="glass-card overflow-hidden">
                     <div class="p-4 p-md-5 border-bottom border-secondary">
                         <h2 class="display-6 fw-bold text-white mb-3 fs-3">
-                            Tulis Resume dan Kesanmu
+                            Perbarui Resume dan Kesanmu
                         </h2>
                         <p class="text-secondary mb-0">
-                            Bagikan teori, pesan moral, karakter favorit, 
-                            atau momen paling berkesan setelah membaca cerita ini.
+                            Lakukan penyesuaian pada pesan moral, teori, atau ulasan yang ingin kamu ubah dari buku ini.
                         </p>
                     </div>
 
-                    <form action="{{ route('resume.store', $book->id) }}" method="POST" class="p-4 p-md-5">
-                        @csrf
+                        <form action="{{ route('bookresume.update', $resume->id) }}" method="POST" class="p-4 p-md-5">                        @csrf
+                        @method('PUT')
 
                         <div class="mb-4">
                             <label class="form-label text-white fw-bold mb-3">
@@ -173,6 +173,7 @@
                             <input type="text" 
                                    name="title" 
                                    class="resume-title" 
+                                   value="{{ old('title', $resume->title) }}"
                                    placeholder="Contoh: Ending paling emosional yang pernah aku baca">
                         </div>
 
@@ -180,7 +181,7 @@
                             <label class="form-label text-white fw-bold mb-3">
                                 Isi Resume
                             </label>
-                            <div id="editor"></div>
+                            <div id="editor">{!! old('content', $resume->content) !!}</div>
                             <input type="hidden" name="content" id="content">
                         </div>
 
@@ -188,7 +189,8 @@
                             <label class="spoiler-box d-flex align-items-start gap-3" style="cursor: pointer;">
                                 <input type="checkbox" 
                                        name="has_spoiler" 
-                                       class="form-check-input mt-1">
+                                       class="form-check-input mt-1"
+                                       {{ old('has_spoiler', $resume->has_spoiler) ? 'checked' : '' }}>
                                 <div>
                                     <div class="fw-bold text-danger mb-1 fs-6">
                                         ⚠ Spoiler Alert
@@ -202,8 +204,8 @@
                         </div>
 
                         <button type="submit" class="publish-btn">
-                            <i class="fa-solid fa-paper-plane me-2"></i>
-                            Publish Resume
+                            <i class="fa-solid fa-pen-to-square me-2"></i>
+                            Simpan Perubahan
                         </button>
                     </form>
                 </div>

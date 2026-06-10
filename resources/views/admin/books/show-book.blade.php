@@ -4,283 +4,351 @@
 
 @push('styles')
     <style>
-        .book-cover-detail {
-            width: 100%;
-            max-width: 280px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        /* ================= PREMIUM OBSIDIAN CLEAN STYLES ================= */
+        
+        .detail-wrapper {
+            background: transparent;
+            color: var(--text);
+            padding: 10px 0;
+        }
+
+        /* Profil Header Buku */
+        .book-header-profile {
+            display: flex;
+            gap: 35px;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Frame Cover Buku Modern */
+        .book-profile-cover img {
+            width: 170px;
+            height: 245px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease;
         }
-        .book-cover-detail:hover {
-            transform: scale(1.05);
+        .book-profile-cover img:hover {
+            transform: scale(1.02);
         }
-        .book-content {
+
+        .book-profile-cover .no-cover {
+            width: 170px;
+            height: 245px;
+            background: var(--sidebar-bg);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+        }
+
+        .book-profile-info {
+            flex: 1;
+        }
+
+        /* Badges Minimalis */
+        .tag-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .tag-item {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .tag-genre {
+            background: rgba(6, 182, 212, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(6, 182, 212, 0.18);
+        }
+        .tag-approved {
+            background: rgba(16, 185, 129, 0.08);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.18);
+        }
+        .tag-pending {
+            background: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.18);
+        }
+
+        /* Grid Informasi Searah */
+        .info-inline-grid {
+            display: flex;
+            gap: 45px;
+            margin-top: 24px;
+        }
+        .info-inline-item small {
+            display: block;
+            color: var(--muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .info-inline-item span {
+            font-size: 1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Baris Tombol Aksi */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        .btn-edit-custom {
+            background: var(--primary);
+            color: #0b0f19;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .btn-edit-custom:hover {
+            background: #22d3ee;
+            color: #0b0f19;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        /* Statistik Minimalis Terintegrasi */
+        .inline-stats {
+            display: flex;
+            gap: 35px;
+            margin-bottom: 35px;
+            background: rgba(17, 24, 39, 0.4);
+            padding: 16px 28px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+        .stat-node {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stat-node .stat-val {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .stat-node .stat-lbl {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Section Penulisan Utama */
+        .content-section-title {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .text-body-area {
+            color: #cbd5e1;
             line-height: 1.9;
-            font-size: 1.05rem;
-            color: #2c3e50;
+            font-size: 1rem;
             text-align: justify;
-        }
-        .meta-info {
-            font-size: 0.95rem;
-            color: #6c757d;
-        }
-        .info-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(17, 24, 39, 0.3);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 15px;
-            color: white;
-            margin-bottom: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
         }
-        .info-card i {
-            font-size: 1.3rem;
-            opacity: 0.9;
+
+        /* Overrides Navigasi Halaman */
+        .pagination .page-link {
+            background: var(--sidebar-bg);
+            border-color: var(--border);
+            color: var(--muted);
         }
-        .description-box {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+        .pagination .page-item.active .page-link {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
         }
-        .content-box {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .action-buttons .btn {
-            margin: 5px;
-        }
-        .badge-custom {
-            font-size: 0.85rem;
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
-        .stats-card {
-            background: #fff;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 10px;
-        }
-        .stats-card h4 {
-            margin: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-        .stats-card p {
-            margin: 5px 0 0;
-            color: #6c757d;
-            font-size: 0.85rem;
+
+        /* Responsivitas Media */
+        @media (max-width: 768px) {
+            .book-header-profile {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .info-inline-grid {
+                justify-content: center;
+                gap: 25px;
+                flex-wrap: wrap;
+            }
+            .action-bar {
+                justify-content: center;
+            }
+            .inline-stats {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 @endpush
 
 @section('content')
-<main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
-    <div class="container-fluid">
-        
-        {{-- Header dengan Breadcrumb --}}
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold mb-1">
-                    <i class="fas fa-book-open text-primary me-2"></i>
-                    Detail Buku
-                </h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.genre.index') }}">Daftar Buku</a></li>
-                        <li class="breadcrumb-item active">{{ $book->title }}</li>
-                    </ol>
-                </nav>
-            </div>
-            <a href="{{ route('admin.genre.index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Kembali
-            </a>
+<div class="container-fluid px-0 detail-wrapper">
+    
+    {{-- ================= HEADER UTAMA (BREADCRUMB & KEMBALI) ================= --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0" style="font-size: 0.8rem;">
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}" style="color: var(--muted); text-decoration: none;">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin/genre') }}" style="color: var(--muted); text-decoration: none;">Daftar Buku</a></li>
+                    <li class="breadcrumb-item active text-truncate" style="max-width: 200px; color: var(--primary);" aria-current="page">{{ $book->title }}</li>
+                </ol>
+            </nav>
         </div>
-
-        <div class="row">
-            {{-- ================= SIDEBAR KIRI: COVER & INFO ================= --}}
-            <div class="col-lg-3 col-md-4 mb-4">
-                {{-- Cover Buku --}}
-                <div class="text-center mb-4">
-                    @if ($book->image_path)
-                        <img 
-                            src="{{ asset($book->image_path) }}" 
-                            alt="{{ $book->title }}" 
-                            class="book-cover-detail"
-                            onerror="this.src='{{ asset('images/default-book.png') }}'"
-                        >
-                    @else
-                        <div 
-                            class="bg-light d-flex align-items-center justify-content-center book-cover-detail mx-auto" 
-                            style="height: 380px;"
-                        >
-                            <div class="text-center text-muted">
-                                <i class="fas fa-book fa-4x mb-3"></i>
-                                <p class="mb-0 small">Tidak Ada Cover</p>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Genre Badge --}}
-                <div class="text-center mb-3">
-                    <span class="badge bg-primary badge-custom">
-                        <i class="fas fa-tag me-1"></i>
-                        {{ $book->genre }}
-                    </span>
-                </div>
-
-                {{-- Status Badge --}}
-                <div class="text-center mb-3">
-                    @if($book->status === 'approved')
-                        <span class="badge bg-success badge-custom">
-                            <i class="fas fa-check-circle me-1"></i> Disetujui
-                        </span>
-                    @elseif($book->status === 'pending')
-                        <span class="badge bg-warning text-dark badge-custom">
-                            <i class="fas fa-clock me-1"></i> Menunggu Review
-                        </span>
-                    @else
-                        <span class="badge bg-secondary badge-custom">
-                            <i class="fas fa-question-circle me-1"></i> {{ ucfirst($book->status) }}
-                        </span>
-                    @endif
-                </div>
-
-                {{-- Stats Cards --}}
-                <div class="stats-card">
-                    <h4>{{ $book->reviews->count() }}</h4>
-                    <p><i class="fas fa-star text-warning me-1"></i>Review</p>
-                </div>
-
-                <div class="stats-card">
-                    <h4>{{ $book->komentar->count() }}</h4>
-                    <p><i class="fas fa-comment text-info me-1"></i>Komentar</p>
-                </div>
-
-                <div class="stats-card">
-                    <h4>{{ $book->readingHistories->count() }}</h4>
-                    <p><i class="fas fa-book-reader text-success me-1"></i>Pembaca</p>
-                </div>
-
-                {{-- Action Buttons --}}
-                <div class="action-buttons text-center mt-4">
-                    <a href="{{ route('admin.books.edit', $book->id) }}" class="btn btn-primary btn-sm w-100 mb-2">
-                        <i class="fas fa-edit me-2"></i>Edit Buku
-                    </a>
-                    
-                    <form method="POST" action="{{ route('admin.books.delete') }}" 
-                          onsubmit="return confirm('Yakin ingin menghapus buku ini?')" class="d-inline w-100">
-                        @csrf
-                        <input type="hidden" name="id" value="{{ $book->id }}">
-                        <button type="submit" class="btn btn-danger btn-sm w-100">
-                            <i class="fas fa-trash me-2"></i>Hapus Buku
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            {{-- ================= KONTEN UTAMA: DETAIL BUKU ================= --}}
-            <div class="col-lg-9 col-md-8">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        
-                        {{-- Judul Buku --}}
-                        <h1 class="fw-bold mb-3" style="color: #2c3e50; font-size: 2rem;">
-                            {{ $book->title }}
-                        </h1>
-
-                        {{-- Meta Info --}}
-                        <div class="meta-info mb-4 pb-3 border-bottom">
-                            <div class="row">
-                                <div class="col-md-4 mb-2">
-                                    <i class="fas fa-user text-primary me-2"></i>
-                                    <strong>Penulis:</strong> {{ $book->author }}
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <i class="fas fa-calendar text-success me-2"></i>
-                                    <strong>Tahun:</strong> {{ $book->year }}
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <i class="fas fa-clock text-info me-2"></i>
-                                    <strong>Update:</strong> {{ $book->updated_at->format('d M Y') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Deskripsi Buku --}}
-                        @if($book->description)
-                        <div class="description-box">
-                            <h5 class="fw-bold mb-3">
-                                <i class="fas fa-align-left me-2 text-primary"></i>
-                                Deskripsi Buku
-                            </h5>
-                            <p class="mb-0" style="line-height: 1.8;">
-                                {{ $book->description }}
-                            </p>
-                        </div>
-                        @endif
-
-                        {{-- Konten / Isi Buku --}}
-                        <div class="content-box">
-                            <h5 class="fw-bold mb-4">
-                                <i class="fas fa-book-open me-2 text-primary"></i>
-                                Isi Buku Lengkap
-                            </h5>
-
-                            <div class="book-content">
-                                @if($book->content)
-                                    {!! $finalContent !!}
-                                @else
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Konten buku belum tersedia.
-                                    </div>
-                                @endif
-                            </div>
-
-                            {{-- Pagination --}}
-                            @if($paginatedData->hasPages())
-                                <div class="d-flex justify-content-center mt-5 pt-4 border-top">
-                                    {{ $paginatedData->links() }}
-                                </div>
-                                <div class="text-center text-muted small mt-3">
-                                    <i class="fas fa-file-alt me-1"></i>
-                                    Halaman {{ $paginatedData->currentPage() }} dari {{ $paginatedData->lastPage() }}
-                                    (Total {{ $paginatedData->total() }} baris)
-                                </div>
-                            @endif
-                        </div>
-
-                        {{-- Additional Info --}}
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="alert alert-light border">
-                                    <div class="row text-center">
-                                        <div class="col-md-4">
-                                            <strong class="text-primary">ID Buku:</strong> #{{ $book->id }}
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong class="text-success">Dibuat:</strong> {{ $book->created_at->format('d M Y H:i') }}
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong class="text-info">Terakhir Update:</strong> {{ $book->updated_at->diffForHumans() }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <a href="{{ route('admin.genre.index') }}" class="btn btn-sm btn-outline-secondary text-white border-secondary px-3 rounded-2 fw-semibold">
+            <i class="fas fa-arrow-left me-2"></i> Kembali
+        </a>
     </div>
-</main>
+
+    {{-- ================= SEGMEN PROFIL BUKU ================= --}}
+    <div class="book-header-profile">
+        <div class="book-profile-cover">
+            @if ($book->image_path)
+                <img src="{{ asset($book->image_path) }}" alt="{{ $book->title }}" onerror="this.src='{{ asset('images/default-book.png') }}'">
+            @else
+                <div class="no-cover">
+                    <i class="fas fa-image fa-2x"></i>
+                </div>
+            @endif
+        </div>
+
+        <div class="book-profile-info">
+            <div class="tag-container">
+                <span class="tag-item tag-genre">{{ $book->genre }}</span>
+                @if($book->status === 'approved')
+                    <span class="tag-item tag-approved">Disetujui</span>
+                @elseif($book->status === 'pending')
+                    <span class="tag-item tag-pending">Pending</span>
+                @else
+                    <span class="tag-item bg-dark text-muted border border-secondary">{{ $book->status }}</span>
+                @endif
+            </div>
+
+            <h1 class="fw-bold text-white mb-2" style="font-size: 2.2rem; letter-spacing: -0.5px;">{{ $book->title }}</h1>
+            
+            <div class="info-inline-grid">
+                <div class="info-inline-item">
+                    <small>Penulis</small>
+                    <span>{{ $book->author }}</span>
+                </div>
+                <div class="info-inline-item">
+                    <small>Tahun Terbit</small>
+                    <span class="text-info font-monospace">{{ $book->year }}</span>
+                </div>
+                <div class="info-inline-item">
+                    <small>Terakhir Diperbarui</small>
+                    <span class="text-secondary">{{ $book->updated_at->format('d M Y H:i') }}</span>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <a href="{{ route('admin.books.edit', $book->id) }}" class="btn btn-edit-custom btn-sm px-4 rounded-2">
+                    <i class="fas fa-edit me-2"></i> Edit Buku
+                </a>
+                <form method="POST" action="{{ route('admin.books.delete') }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $book->id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-2" style="color: #fca5a5; border-color: rgba(239, 68, 68, 0.35);">
+                        <i class="fas fa-trash me-2"></i> Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- ================= SEGMEN INDIKATOR STATISTIK ================= --}}
+    <div class="inline-stats shadow-sm">
+        <div class="stat-node">
+            <span class="stat-val">{{ $book->reviews->count() }}</span>
+            <span class="stat-lbl">Review</span>
+        </div>
+        <div class="stat-node border-start ps-3" style="border-color: var(--border) !important;">
+            <span class="stat-val">{{ $book->komentar->count() }}</span>
+            <span class="stat-lbl">Komentar</span>
+        </div>
+        <div class="stat-node border-start ps-3" style="border-color: var(--border) !important;">
+            <span class="stat-val">{{ $book->readingHistories->count() }}</span>
+            <span class="stat-lbl">Pembaca</span>
+        </div>
+    </div>
+
+    {{-- ================= SEGMEN SINOPSIS ================= --}}
+    @if($book->description)
+        <div class="mb-40" style="margin-bottom: 35px;">
+            <div class="content-section-title">
+                <i class="fas fa-align-left text-primary"></i> Sinopsis Buku
+            </div>
+            <div style="font-size: 0.98rem; max-width: 850px; line-height: 1.7; color: #94a3b8;">
+                {{ $book->description }}
+            </div>
+        </div>
+    @endif
+
+    {{-- ================= SEGMEN ISI BUKU LENGKAP ================= --}}
+    <div class="mt-4">
+        <div class="content-section-title">
+            <i class="fa-solid fa-book-open text-primary"></i> Isi Buku Lengkap
+        </div>
+
+        <div class="text-body-area shadow-sm">
+            <div class="book-content">
+                @if($book->content)
+                    {!! $finalContent !!}
+                @else
+                    <div class="text-center text-muted py-2 small">
+                        <i class="fas fa-info-circle me-2"></i> Konten atau isi buku belum tersedia.
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Navigasi Halaman (Pagination) --}}
+        @if($paginatedData->hasPages())
+            <div class="d-flex flex-column align-items-center mt-4">
+                <div class="pagination-sm">
+                    {{ $paginatedData->links() }}
+                </div>
+                <div class="text-muted small mt-2" style="font-size: 0.75rem; font-family: monospace;">
+                    PAGE: {{ $paginatedData->currentPage() }} / {{ $paginatedData->lastPage() }} [Total: {{ $paginatedData->total() }} baris]
+                </div>
+            </div>
+        @endif
+    </div>
+
+    {{-- ================= METRICS FOOTER ================= --}}
+    <div class="mt-5 pt-3 border-top d-flex justify-content-between text-muted" style="border-color: var(--border) !important; font-size: 0.75rem; font-family: monospace;">
+        <div>DATA_ID: #{{ $book->id }}</div>
+        <div>TIMESTAMP: {{ $book->created_at->format('Y-m-d H:i:s') }}</div>
+        <div>NODE_STATUS: ACTIVE</div>
+    </div>
+
+</div>
 @endsection
