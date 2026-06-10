@@ -196,9 +196,18 @@
             object-fit:cover;
         }
 
-        .profile-name{
-            font-size:.95rem;
-        }
+        .profile-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(56, 189, 248, 0.15);
+        color: #38bdf8;
+        padding: 10px 18px;
+        border-radius: 50px;
+        border: 1px solid rgba(56,189,248,.3);
+        font-size: 16px;
+        font-weight: 700;
+    }
 
         /* ================= SIDEBAR ================= */
 
