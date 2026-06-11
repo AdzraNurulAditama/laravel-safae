@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class BookSubmissionController extends Controller
 {
@@ -54,7 +55,9 @@ class BookSubmissionController extends Controller
         }
 
         $data_valid['status'] = 'pending';
-        
+
+        $data_valid['user_id'] = Auth::id();
+
         Book::create($data_valid);
 
         return redirect('/tulis-buku')->with('success', 'Buku berhasil dikirim! Mohon tunggu validasi dari Admin.');

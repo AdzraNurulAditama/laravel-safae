@@ -62,6 +62,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(favoriteBook::class);
     }
+public function books()
+{
+    return $this->hasMany(Book::class);
+}
+
+public function premiumRequests()
+{
+    return $this->hasMany(PremiumRequest::class);
+}
 
 
     // helper nama lengkap

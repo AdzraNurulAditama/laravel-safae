@@ -379,6 +379,21 @@
     <a href="{{ url('/tulis-buku') }}">
         <i class="fa-solid fa-pen-nib"></i> Tulis Buku
     </a>
+   <a href="{{ url('/tulis-buku') }}"
+   class="{{ request()->is('tulis-buku*') ? 'active' : '' }}">
+
+    <i class="fa-solid fa-pen-nib"></i>
+    Tulis Buku
+
+</a>
+
+<a href="{{ route('premium.index') }}"
+   class="{{ request()->is('ajukan-premium*') ? 'active' : '' }}">
+
+    <i class="fa-solid fa-crown"></i>
+    Ajukan Premium
+
+</a>
 
     <div class="sidebar-title">
         Koleksi
@@ -387,6 +402,12 @@
     <a href="{{ route('genre.index') }}">
         <i class="fa-solid fa-book-bookmark"></i> Genre Buku
     </a>
+
+    <a href="{{ route('premium.books') }}"
+   class="{{ request()->is('buku-premium*') ? 'active' : '' }}">
+    <i class="fa-solid fa-crown"></i>
+    Buku Premium
+</a>
 
     <a href="{{ route('favorite.index') }}">
         <i class="fa-regular fa-heart"></i> Buku Favorit

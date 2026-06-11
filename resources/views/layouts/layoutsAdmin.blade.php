@@ -287,6 +287,21 @@
             </a>
         </li>
 
+        {{-- PREMIUM --}}
+                <li>
+            <a href="{{ route('admin.premium.index') }}">
+                <i class="fas fa-crown"></i>
+                verifikasi Pengajuan Premium
+            </a>
+        </li>
+
+        <li>
+    <a href="{{ route('admin.premium.books') }}">
+        <i class="fas fa-book"></i>
+        Kelola Buku Premium
+    </a>
+</li>
+
         {{-- USER --}}
         <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
             <a href="{{ url('/admin/users') }}">
@@ -336,7 +351,15 @@
             </a>
         </li>
 
-        {{-- KELOLA NOTIFIKASI --}}
+
+        {{-- TULIS BUKU --}}
+        <li class="{{ request()->is('tulis-buku') ? 'active' : '' }}">
+            <a href="{{ url('/tulis-buku') }}">
+                <i class="fas fa-fw fa-pen"></i> Tulis Buku
+            </a>
+        </li>
+
+        {{-- kelola notifikasi --}}
         <li class="{{ request()->is('admin/notifications*') ? 'active' : '' }}">
             <a href="{{ route('admin.notifications.index') }}">
                 <i class="fa-solid fa-bell"></i> Kelola Notifikasi

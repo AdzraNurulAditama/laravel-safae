@@ -4,21 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PremiumRequest;
 
 class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'author',
-        'genre',
-        'year',
-        'description',
-        'content',
-        'status',
-        'image_path',
-    ];
+ protected $fillable = [
+    'title',
+    'author',
+    'genre',
+    'year',
+    'description',
+    'content',
+    'status',
+    'image_path',
+    'user_id',
+    'reader_count',
+    'is_premium',
+    'premium_point'
+];
 
     /**
      * Accessor URL GAMBAR (UNTUK FLUTTER)
@@ -46,4 +51,15 @@ class Book extends Model
     {
         return $this->hasMany(ReadingHistory::class);
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+public function premiumRequests()
+{
+    return $this->hasMany(PremiumRequest::class);
+}
+
 }

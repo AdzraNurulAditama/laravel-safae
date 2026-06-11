@@ -34,6 +34,9 @@ use App\Http\Middleware\AdminOnly;
 use App\Http\Controllers\BookResumeController;
   use App\Http\Controllers\PromotionController;
   use App\Http\Controllers\AdminPromotionController;
+  use App\Http\Controllers\PremiumController;
+  use App\Http\Controllers\AdminPremiumController;
+use App\Http\Controllers\PremiumBookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,20 +117,21 @@ Route::middleware('auth')->group(function () {
         [BookResumeController::class, 'create']
     )->name('resume.create');
 
-    // Route untuk melihat daftar resume (yang sudah kamu punya)
-    Route::get('/my-resumes', [BookResumeController::class, 'myResumes'])->name('resume.my');
+    Route::post('/book/{book}/resume/store',
+        [BookResumeController::class, 'store']
+    )->name('resume.store');
 
-    // --- PASTIKAN TIGA BARIS INI ADA DAN NAMANYA SESUAI ---
-    // 1. Route untuk halaman edit
-    Route::get('/bookresume/{id}/edit', [BookResumeController::class, 'edit'])->name('bookresume.edit');
+    Route::get('/my-resumes',
+        [BookResumeController::class, 'myResumes']
+    )->name('resume.my');
 
-    // 2. Route untuk memproses update data
-    Route::put('/bookresume/{id}', [BookResumeController::class, 'update'])->name('bookresume.update');
+    Route::get('/resume/{resume}',
+        [BookResumeController::class, 'show']
+    )->name('resume.show');
 
-    // 3. Route untuk memproses hapus data (Ini yang bikin error tadi)
-    Route::delete('/bookresume/{id}', [BookResumeController::class, 'destroy'])->name('bookresume.destroy');
-    // lihat detail
-    Route::get('/bookresume/{id}', [BookResumeController::class, 'show'])->name('bookresume.show');
+    Route::delete('/resume/{resume}',
+        [BookResumeController::class, 'destroy']
+    )->name('resume.destroy');
     /*
     |--------------------------------------------------------------------------
     | FAVORIT
@@ -147,19 +151,24 @@ Route::middleware('auth')->group(function () {
     | REWARD
     |--------------------------------------------------------------------------
     */
-    Route::get('/reward', [RewardController::class, 'index'])
-        ->name('reward.index');
+    Route::get('/reward', [RewardController::class, 'index'])->name('reward.index');
+    Route::get('/reward-detail', [RewardController::class, 'detail'])->name('reward.detail');
 
     /*
     |--------------------------------------------------------------------------
-    | PEMBAYARAN
+    | ajukan premium
     |--------------------------------------------------------------------------
     */
-    Route::get('/pembayaran', [PembayaranController::class, 'index'])
-        ->name('pembayaran.index');
+    Route::get('/ajukan-premium', [PremiumController::class, 'index'])->name('premium.index');
+    Route::post('/ajukan-premium/{book}', [PremiumController::class, 'store'])->name('premium.store');
 
-    Route::post('/pembayaran/proses', [PembayaranController::class, 'proses'])
-        ->name('pembayaran.proses');
+Route::get('/buku-premium', [PremiumBookController::class, 'index'])
+    ->name('premium.books');
+
+Route::post(
+    '/buku-premium/tukar/{book}',
+    [PremiumBookController::class, 'tukar']
+)->name('premium.tukar');
 
     /*
     |--------------------------------------------------------------------------
@@ -279,32 +288,40 @@ Route::middleware(['auth', AdminOnly::class])
         Route::get('/', [AdminController::class, 'index'])
             ->name('dashboard');
 
+            Route::delete(
+    '/premium-books/{id}',
+    [AdminPremiumController::class, 'destroy']
+)->name('premium.destroy');
+
+Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium'])
+    ->name('premium.set');
+       
         /*
         |--------------------------------------------------------------------------
-        | PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/pembayaran', [PembayaranAdminController::class, 'index'])
-            ->name('pembayaran.index');
-
-/*
-        |--------------------------------------------------------------------------
-        | RIWAYAT BACA (SUDAH DI-FIX JALURNYA)
-        |--------------------------------------------------------------------------
-        */
- /*
-        |--------------------------------------------------------------------------
-        | RIWAYAT BACA ADMIN (DIPINDAHKAN KE CONTROLLER ADMIN YANG BENAR)
+        | RIWAYAT BACA
         |--------------------------------------------------------------------------
         */
         Route::prefix('riwayat-baca')->name('kelolariwayat.')->group(function () {
-            Route::get('/', [KelolaRiwayatBacaController::class, 'index'])->name('index');
-            Route::get('/create', [KelolaRiwayatBacaController::class, 'create'])->name('create');
-            Route::post('/', [KelolaRiwayatBacaController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [KelolaRiwayatBacaController::class, 'edit'])->name('edit');
-            Route::post('/{id}', [KelolaRiwayatBacaController::class, 'update'])->name('update');
-            Route::delete('/{id}', [KelolaRiwayatBacaController::class, 'destroy'])->name('destroy');
+
+            Route::get('/', [KelolaRiwayatBacaController::class, 'index'])
+                ->name('index');
+
+            Route::get('/create', [KelolaRiwayatBacaController::class, 'create'])
+                ->name('create');
+
+            Route::post('/', [KelolaRiwayatBacaController::class, 'store'])
+                ->name('store');
+
+            Route::get('/{id}/edit', [KelolaRiwayatBacaController::class, 'edit'])
+                ->name('edit');
+
+            Route::post('/{id}', [KelolaRiwayatBacaController::class, 'update'])
+                ->name('update');
+
+            Route::delete('/{id}', [KelolaRiwayatBacaController::class, 'destroy'])
+                ->name('destroy');
         });
+
         /*
         |--------------------------------------------------------------------------
         | USERS
@@ -312,17 +329,13 @@ Route::middleware(['auth', AdminOnly::class])
         */
         Route::resource('/users', UserController::class);
 
-/*
+        /*
         |--------------------------------------------------------------------------
         | REVIEWS
         |--------------------------------------------------------------------------
         */
         Route::get('/reviews', [AdminReviewController::class, 'index'])
             ->name('reviews.index');
-
-        // TAMBAHKAN BARIS INI:
-        Route::get('/reviews/{id}', [AdminReviewController::class, 'show'])
-            ->name('reviews.show');
 
         Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])
             ->name('reviews.destroy');
@@ -332,9 +345,9 @@ Route::middleware(['auth', AdminOnly::class])
         | FORUM
         |--------------------------------------------------------------------------
         */
-        Route::get('/forum', [AdminForumController::class, 'index'])->name('forum.index');
-        Route::get('/forum/{id}', [AdminForumController::class, 'detail'])->name('forum.detail');
-        Route::delete('/forum/{id}', [AdminForumController::class, 'destroy'])->name('forum.destroy');
+        Route::get('/forum', [AdminForumController::class, 'index'])
+            ->name('forum.index');
+
         /*
         |--------------------------------------------------------------------------
         | GENRE & BUKU
@@ -403,6 +416,35 @@ Route::middleware(['auth', AdminOnly::class])
 
         Route::post('/rewards/{user}/remove', [AdminRewardController::class, 'remove'])
             ->name('reward.remove');
+
+            /*
+        |--------------------------------------------------------------------------
+        | premium
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/premium', [AdminPremiumController::class, 'index'])->name('premium.index');
+
+        Route::post('/premium/{id}/approve',[AdminPremiumController::class, 'approve'])->name('premium.approve');
+
+        Route::post('/premium/{id}/reject',[AdminPremiumController::class, 'reject'])->name('premium.reject');
+
+        Route::get('/premium-books', [AdminPremiumController::class, 'books'])
+    ->name('premium.books');
+
+    Route::get('/buku-premium', [PremiumBookController::class, 'index'])
+    ->name('premium.books');
+
+Route::post('/buku-premium/{book}/tukar', [PremiumBookController::class, 'tukar'])
+    ->name('premium.tukar');
+
+Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium'])
+    ->name('premium.set');
+
+Route::delete(
+    '/premium-books/{id}',
+    [AdminPremiumController::class, 'destroy']
+)->name('premium.destroy');
 
         /*
         |--------------------------------------------------------------------------

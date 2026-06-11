@@ -10,62 +10,126 @@ use Illuminate\Support\Facades\Auth;
 class FullBacaanController extends Controller
 {
    
-    public function show($id, $page = 1)
-    {
-       
-        $book = Book::findOrFail($id);
+   public function show($id, $page = 1)
+{
+    $book = Book::findOrFail($id);
 
-        
-        if (Auth::check()) {ReadingHistory::updateOrCreate(
-                [
-                    'user_id' => Auth::id(),
-                    'book_id' => $book->id,
-                ],
-                [
-                    'progress' => $page,
-                    'last_read_at' => now(),
-                ]
+    if ($book->is_premium) {
+
+    $akses =
+        \App\Models\PremiumBookUser::where(
+            'user_id',
+            Auth::id()
+        )
+        ->where(
+            'book_id',
+            $book->id
+        )
+        ->exists();
+
+    if (!$akses) {
+
+        return redirect()
+            ->route('premium.books')
+            ->with(
+                'error',
+                'Silakan tukarkan poin terlebih dahulu.'
             );
-        }
+    }
+}
 
-        $text = $book->full_text;
-        $text = str_replace("\r\n", "\n", $text);
-        $text = str_replace("\r", "\n", $text);
-        $halaman = explode("\n", $text);
-        $hasil = [];
-        foreach ($halaman as $baris) {
-            if (trim($baris) !== '') {
-                $hasil[] = $baris;
+    if (Auth::check()) {
+
+        $existingReader = ReadingHistory::where(
+            'user_id',
+            Auth::id()
+        )->where(
+            'book_id',
+            $book->id
+        )->exists();
+
+        if (!$existingReader) {
+
+            $book->increment('reader_count');
+
+            $book->refresh();
+
+            if (
+                $book->reader_count >= 100000 &&
+                !$book->premium_notified
+            ) {
+
+                \App\Models\Notification::create([
+                    'user_id' => $book->user_id,
+                    'title' => 'Buku Siap Premium',
+                    'message' => '🎉 Buku "' . $book->title . '" telah mencapai 100.000 pembaca dan dapat diajukan menjadi Premium.',
+                ]);
+
+                $book->update([
+                    'premium_notified' => true
+                ]);
             }
         }
 
-        $totalHalaman = count($hasil);
+        ReadingHistory::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'book_id' => $book->id,
+            ],
+            [
+                'progress' => $page,
+                'last_read_at' => now(),
+            ]
+        );
+    }
 
-        if ($totalHalaman == 0) {
-            return view('books.fullbacaan', [
-                'buku' => $book,
-                'halaman' => 'Belum ada konten.',
-                'page' => 1,
-                'totalHalaman' => 1
-            ]);
-        }
+    // =========================
+    // PROSES ISI BUKU
+    // =========================
 
-      
-        if ($page < 1) {
-            $page = 1;
-        }
+    $text = $book->full_text ?? $book->content ?? '';
 
-        if ($page > $totalHalaman) {
-            $page = $totalHalaman;
+    $text = str_replace("\r\n", "\n", $text);
+    $text = str_replace("\r", "\n", $text);
+
+    $halaman = explode("\n", $text);
+
+    $hasil = [];
+
+    foreach ($halaman as $baris) {
+
+        if (trim($baris) !== '') {
+            $hasil[] = $baris;
         }
+    }
+
+    $totalHalaman = count($hasil);
+
+    if ($totalHalaman == 0) {
 
         return view('books.fullbacaan', [
             'buku' => $book,
-            'halaman' => $hasil[$page - 1],
-            'page' => $page,
-            'totalHalaman' => $totalHalaman
+            'halaman' => 'Belum ada konten.',
+            'page' => 1,
+            'totalHalaman' => 1
         ]);
     }
+
+    if ($page < 1) {
+        $page = 1;
+    }
+
+    if ($page > $totalHalaman) {
+        $page = $totalHalaman;
+    }
+
+    return view('books.fullbacaan', [
+        'buku' => $book,
+        'halaman' => $hasil[$page - 1],
+        'page' => $page,
+        'totalHalaman' => $totalHalaman
+    ]);
+}
 
   
     public function ulasan($id)
