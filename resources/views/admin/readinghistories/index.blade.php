@@ -1,4 +1,4 @@
-@extends('layouts.layoutsAdmin')
+@extends('layouts.layoutsAdmin') 
 
 @section('title', 'Kelola Riwayat Baca')
 
@@ -44,6 +44,7 @@
         .history-row-card:hover {
             border-color: rgba(6, 182, 212, 0.3);
             background: rgba(17, 24, 39, 0.6);
+            transform: translateY(-1px);
         }
 
         /* Pembagian Lebar Kolom Flexbox yang Presisi dan Simetris */
@@ -52,6 +53,42 @@
         .col-hist-progress { flex: 1.3; min-width: 0; padding-right: 20px; }
         .col-hist-date { flex: 1.2; color: var(--muted); font-size: 0.85rem; font-family: var(--font-mono, monospace); }
         .col-hist-actions { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
+
+        /* Sizing Akurat Gambar Cover Buku (Mencegah Kebesaran) */
+        .book-cover-preview {
+            width: 38px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Fallback Box jika File Gambar Kosong */
+        .book-icon-fallback {
+            width: 38px;
+            height: 54px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* Avatar Pengguna */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
 
         /* Komponen Progress Bar Kustom */
         .progress-container-tech {
@@ -118,6 +155,7 @@
             border-radius: 8px;
             font-size: 0.85rem;
             transition: all 0.2s;
+            cursor: pointer;
         }
         .btn-action-purge:hover {
             background: rgba(239, 68, 68, 0.1);
@@ -189,10 +227,14 @@
                 
                 {{-- KOLOM 1: INFO PENGGUNA --}}
                 <div class="col-hist-user">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
-                         style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); flex-shrink: 0;">
-                        <i class="fas fa-user-circle" style="font-size: 0.95rem;"></i>
-                    </div>
+                    @if($history->user && $history->user->foto_profil)
+                        <img src="{{ asset('storage/' . $history->user->foto_profil) }}" class="user-avatar" alt="Profile">
+                    @else
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
+                            style="width: 36px; height: 36px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); flex-shrink: 0;">
+                            <i class="fas fa-user-circle" style="font-size: 0.95rem;"></i>
+                        </div>
+                    @endif
                     <div class="text-truncate">
                         <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">
                             {{ $history->user->username ?? ($history->user->nama_depan . ' ' . $history->user->nama_belakang) ?? 'User' }}
@@ -201,11 +243,32 @@
                     </div>
                 </div>
 
-                {{-- KOLOM 2: JUDUL BUKU --}}
-                <div class="col-hist-book text-truncate">
-                    <div class="text-white fw-semibold text-truncate" style="font-size: 0.95rem;" title="{{ $history->book->title ?? '-' }}">
-                        <i class="fas fa-book opacity-40 me-2" style="font-size: 0.85rem;"></i>
-                        {{ $history->book->title ?? '-' }}
+                {{-- KOLOM 2: JUDUL BUKU + TATA LETAK COVER AMAN --}}
+                <div class="col-hist-book">
+                    <div class="d-flex align-items-center gap-3">
+
+                        {{-- Logika disesuaikan dengan folder covers --}}
+                        @if($history->book && !empty($history->book->image_path))
+        <img src="{{ asset(ltrim($history->book->image_path, '/')) }}"
+                        class="book-cover-preview"
+                        alt="Cover">
+                @elseif($history->book && !empty($history->book->cover_image))
+                    <img src="{{ asset($history->book->cover_image) }}"
+                        class="book-cover-preview"
+                        alt="Cover">
+                @else
+                    <div class="book-icon-fallback">
+                        <i class="fas fa-book"></i>
+                    </div>
+                @endif
+
+                        <div class="text-truncate">
+                            <div class="text-white fw-semibold text-truncate" title="{{ $history->book->title ?? '-' }}">
+                                {{ $history->book->title ?? 'Buku Telah Dihapus' }}
+                            </div>
+                            <span class="text-muted small font-monospace" style="font-size: 0.75rem;">BOOK_ID: {{ $history->book->id ?? '-' }}</span>
+                        </div>
+
                     </div>
                 </div>
 
@@ -250,7 +313,7 @@
             {{-- TAMPILAN JIKA DATA KOSONG --}}
             <div class="text-center py-5" style="background: var(--sidebar-bg); border: 1px dashed var(--border); border-radius: 12px;">
                 <div class="py-4 opacity-50">
-                    <i class="fas fa-history fa-2.5x mb-3 text-secondary"></i>
+                    <i class="fas fa-history fa-2x mb-3 text-secondary"></i>
                     <div class="small fw-semibold text-muted">Belum ada data catatan riwayat baca yang terekam.</div>
                 </div>
             </div>

@@ -379,13 +379,6 @@
     <a href="{{ url('/tulis-buku') }}">
         <i class="fa-solid fa-pen-nib"></i> Tulis Buku
     </a>
-   <a href="{{ url('/tulis-buku') }}"
-   class="{{ request()->is('tulis-buku*') ? 'active' : '' }}">
-
-    <i class="fa-solid fa-pen-nib"></i>
-    Tulis Buku
-
-</a>
 
 <a href="{{ route('premium.index') }}"
    class="{{ request()->is('ajukan-premium*') ? 'active' : '' }}">

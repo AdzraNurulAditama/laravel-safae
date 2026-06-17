@@ -50,21 +50,32 @@
         /* Pembagian Lebar Kolom Flexbox yang Presisi dan Simetris */
         .col-fav-user { flex: 1.2; display: flex; align-items: center; gap: 12px; min-width: 0; }
         .col-fav-book { flex: 2; min-width: 0; padding-right: 15px; }
-        .col-fav-author { flex: 1.3; color: #cbd5e1; font-size: 0.9rem; min-width: 0; class: text-truncate; }
+        .col-fav-author { flex: 1.3; color: #cbd5e1; font-size: 0.9rem; min-width: 0; }
         .col-fav-actions { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
 
-        /* Icon Badge Buku */
-        .book-icon-box {
-            width: 36px;
-            height: 36px;
-            background: rgba(6, 182, 212, 0.05);
-            border: 1px solid rgba(6, 182, 212, 0.12);
-            border-radius: 8px;
+        /* Sizing dan Tata Letak Gambar Cover Buku */
+        .book-cover-preview {
+            width: 38px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Fallback Box jika File Gambar Kosong / Tidak Ditemukan */
+        .book-icon-fallback {
+            width: 38px;
+            height: 54px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--border);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
             flex-shrink: 0;
         }
 
@@ -101,6 +112,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            cursor: pointer;
         }
         .btn-action-purge:hover {
             background: rgba(239, 68, 68, 0.1);
@@ -168,49 +180,48 @@
                         <i class="fas fa-user" style="font-size: 0.85rem;"></i>
                     </div>
                     <div class="text-truncate">
-                        <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">{{ $fav->user->username }}</div>
+                        <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">{{ $fav->user->username ?? 'Unknown' }}</div>
                         <span class="text-muted font-monospace" style="font-size: 0.72rem; opacity: 0.7;">FAV_ID #{{ $fav->id }}</span>
                     </div>
                 </div>
 
-                {{-- KOLOM 2: DETAIL DATA BUKU --}}
-           {{-- KOLOM 2: DETAIL DATA BUKU + ACCURATE IMAGE PATH LOADER --}}
-<div class="col-fav-book">
-    <div class="d-flex align-items-center gap-3">
-        
-        @if(!empty($fav->book->image_path))
-            @if(file_exists(public_path('uploads/books/' . $fav->book->image_path)))
-                {{-- Kondisi 1: Jika disimpan di public/uploads/books/ --}}
-                <img src="{{ asset('uploads/books/' . $fav->book->image_path) }}" class="book-cover-preview" alt="Cover">
-            @elseif(file_exists(public_path('storage/' . $fav->book->image_path)))
-                {{-- Kondisi 2: Jika disimpan di storage/ dan path-nya murni nama file --}}
-                <img src="{{ asset('storage/' . $fav->book->image_path) }}" class="book-cover-preview" alt="Cover">
-            @else
-                {{-- Kondisi 3: Jika di database path-nya sudah otomatis membawa string 'public/books/...' atau 'books/...' --}}
-                <img src="{{ asset('storage/' . Str::replaceFirst('public/', '', $fav->book->image_path)) }}" class="book-cover-preview" alt="Cover">
-            @endif
-        @else
-            {{-- Fallback jika data image_path kosong di database --}}
-            <div class="book-icon-fallback">
-                <i class="fas fa-book-bookmark"></i>
-            </div>
-        @endif
+                {{-- KOLOM 2: DETAIL DATA BUKU + COVER IMAGE PATH LOADER --}}
+                <div class="col-fav-book">
+                    <div class="d-flex align-items-center gap-3">
+                        
+                        {{-- Logika pengambilan file gambar dari subfolder covers --}}
+                        @if($fav->book && !empty($fav->book->image_path))
+                    <img src="{{ asset(ltrim($fav->book->image_path, '/')) }}"
+                            class="book-cover-preview"
+                            alt="Cover">
 
-        <div class="text-truncate">
-            <div class="text-white fw-bold text-truncate" style="font-size: 0.95rem;" title="{{ $fav->book->title }}">
-                {{ $fav->book->title }}
-            </div>
-            <span class="text-muted small font-monospace" style="font-size: 0.75rem;">BOOK_ID: {{ $fav->book->id ?? '-' }}</span>
-        </div>
-    </div>
-</div>
-                {{-- KOLOM 3: PENULIS BUKU --}}
-                <div class="col-fav-author text-truncate" title="{{ $fav->book->author }}">
-                    <i class="fas fa-feather-alt opacity-40 me-2" style="font-size: 0.8rem;"></i>
-                    <span>{{ $fav->book->author }}</span>
+                    @elseif($fav->book && !empty($fav->book->cover_image))
+                        <img src="{{ asset($fav->book->cover_image) }}"
+                            class="book-cover-preview"
+                            alt="Cover">
+
+                    @else
+                        <div class="book-icon-fallback">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    @endif
+
+                        <div class="text-truncate">
+                            <div class="text-white fw-bold text-truncate" style="font-size: 0.95rem;" title="{{ $fav->book->title ?? 'Buku Telah Dihapus' }}">
+                                {{ $fav->book->title ?? 'Buku Telah Dihapus' }}
+                            </div>
+                            <span class="text-muted small font-monospace" style="font-size: 0.75rem;">BOOK_ID: {{ $fav->book->id ?? '-' }}</span>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- KOLOM 4: KELOMPOK TOMBOL AKSI CONTROLLER --}}
+                {{-- KOLOM 3: PENULIS BUKU --}}
+                <div class="col-fav-author text-truncate" title="{{ $fav->book->author ?? '-' }}">
+                    <i class="fas fa-feather-alt opacity-40 me-2" style="font-size: 0.8rem;"></i>
+                    <span>{{ $fav->book->author ?? '-' }}</span>
+                </div>
+
+                {{-- KOLOM 4: KELOMPOK TOMBOL AKSI --}}
                 <div class="col-fav-actions">
                     {{-- DETAIL --}}
                     <a href="{{ route('admin.favorit.show', $fav->id) }}" class="btn-action-view">
@@ -232,7 +243,7 @@
             {{-- TAMPILAN JIKA DATA KOSONG --}}
             <div class="text-center py-5" style="background: var(--sidebar-bg); border: 1px dashed var(--border); border-radius: 12px;">
                 <div class="py-4 opacity-50">
-                    <i class="fas fa-folder-open fa-2.5x mb-3 text-secondary"></i>
+                    <i class="fas fa-folder-open fa-2x mb-3 text-secondary"></i>
                     <div class="small fw-semibold text-muted">Belum ada data buku favorit yang tersimpan.</div>
                 </div>
             </div>

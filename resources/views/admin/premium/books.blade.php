@@ -83,7 +83,7 @@
 
               {{-- SET PREMIUM --}}
               @if(!$book->is_premium)
-                <form action="{{ route('premium.set', $book->id) }}"
+                <form action="{{ route('admin.premium.set', $book->id) }}"
                       method="POST"
                       style="display:flex; gap:8px; align-items:center;">
                   @csrf

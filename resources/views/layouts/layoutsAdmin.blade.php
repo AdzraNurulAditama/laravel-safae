@@ -352,13 +352,6 @@
         </li>
 
 
-        {{-- TULIS BUKU --}}
-        <li class="{{ request()->is('tulis-buku') ? 'active' : '' }}">
-            <a href="{{ url('/tulis-buku') }}">
-                <i class="fas fa-fw fa-pen"></i> Tulis Buku
-            </a>
-        </li>
-
         {{-- kelola notifikasi --}}
         <li class="{{ request()->is('admin/notifications*') ? 'active' : '' }}">
             <a href="{{ route('admin.notifications.index') }}">

@@ -176,7 +176,7 @@
                     Selesaikan membaca buku lalu tulis resumemu.
                 </p>
             </div>
-        @else
+@else
 
             <div class="row g-4">
                 @foreach($resumes as $resume)
@@ -200,7 +200,7 @@
                                 </div>
 
                                 <div class="resume-title">
-                                    <a href="{{ route('bookresume.show', $resume->id) }}" style="color: white; text-decoration: none;">
+                                    <a href="{{ route('resume.show', $resume->id) }}" style="color: white; text-decoration: none;">
                                         {{ $resume->title ?? 'Tanpa Judul' }}
                                     </a>
                                 </div>
@@ -211,11 +211,11 @@
 
                                 <div class="d-flex gap-3 align-items-center">
                                     
-                                    <a href="{{ route('bookresume.edit', $resume->id) }}" class="btn-custom btn-edit">
+                                    <a href="{{ route('resume.edit', $resume->id) }}" class="btn-custom btn-edit">
                                         Edit
                                     </a>
 
-                                    <form action="{{ route('bookresume.destroy', $resume->id) }}" 
+                                    <form action="{{ route('resume.destroy', $resume->id) }}" 
                                           method="POST" 
                                           class="flex-grow-1 m-0" 
                                           onsubmit="return confirm('Apakah kamu yakin ingin menghapus resume ini?')">

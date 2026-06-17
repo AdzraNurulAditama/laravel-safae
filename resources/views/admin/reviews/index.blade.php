@@ -54,6 +54,16 @@
         .col-rev-date { flex: 1; color: var(--muted); font-size: 0.85rem; }
         .col-rev-actions { flex: 1.2; display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
 
+        /* Sizing Akurat untuk Foto Profil User (Mencegah Kebesaran) */
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
         /* Komponen Rating Bintang */
         .rating-star-active {
             color: #f59e0b;
@@ -93,6 +103,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            cursor: pointer;
         }
         .btn-action-purge:hover {
             background: rgba(239, 68, 68, 0.1);
@@ -156,13 +167,18 @@
                 
                 {{-- KOLOM 1: INFO USER --}}
                 <div class="col-rev-user">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
-                         style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); flex-shrink: 0;">
-                        <i class="fas fa-user" style="font-size: 0.85rem;"></i>
-                    </div>
+                    @if($review->user && !empty($review->user->foto_profil))
+                        <img src="{{ asset('storage/' . $review->user->foto_profil) }}" class="user-avatar" alt="Profile">
+                    @else
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
+                             style="width: 32px; height: 32px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); flex-shrink: 0;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    @endif
+
                     <div class="text-truncate">
                         <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">
-                            {{ $review->user->nama_depan ?? $review->user->name ?? $review->user->username ?? 'User' }}
+                            {{ $review->user->username ?? $review->user->nama_depan ?? 'User' }}
                         </div>
                         <span class="text-muted font-monospace" style="font-size: 0.72rem; opacity: 0.7;">ID #{{ $review->id }}</span>
                     </div>
@@ -172,7 +188,7 @@
                 <div class="col-rev-book text-truncate">
                     <div class="text-white fw-semibold text-truncate" style="font-size: 0.95rem;" title="{{ $review->book->title ?? 'Tidak ada' }}">
                         <i class="fas fa-book opacity-40 me-2" style="font-size: 0.85rem;"></i>
-                        {{ $review->book->title ?? 'Tidak ada' }}
+                        {{ $review->book->title ?? 'Buku Telah Dihapus' }}
                     </div>
                 </div>
 
@@ -183,7 +199,7 @@
                     <span class="text-muted" style="font-size: 0.8rem;">/ 5</span>
                 </div>
 
-                {{-- KOLOM 4: TANGGAL MAJU --}}
+                {{-- KOLOM 4: TANGGAL --}}
                 <div class="col-rev-date">
                     {{ $review->created_at->format('d M Y') }}
                 </div>
@@ -210,7 +226,7 @@
             {{-- TAMPILAN JIKA DATA KOSONG --}}
             <div class="text-center py-5" style="background: var(--sidebar-bg); border: 1px dashed var(--border); border-radius: 12px;">
                 <div class="py-4 opacity-50">
-                    <i class="fas fa-comment-slash fa-2.5x mb-3 text-secondary"></i>
+                    <i class="fas fa-comment-slash fa-2x mb-3 text-secondary"></i>
                     <div class="small fw-semibold text-muted">Belum ada ulasan buku yang tersimpan.</div>
                 </div>
             </div>

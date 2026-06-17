@@ -113,25 +113,19 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-    Route::get('/book/{book}/resume/create',
-        [BookResumeController::class, 'create']
-    )->name('resume.create');
+    Route::get('/book/{book}/resume/create', [BookResumeController::class, 'create'])->name('resume.create');
+    Route::post('/book/{book}/resume/store', [BookResumeController::class, 'store'])->name('resume.store');
+    Route::get('/my-resumes', [BookResumeController::class, 'myResumes'])->name('resume.my');
 
-    Route::post('/book/{book}/resume/store',
-        [BookResumeController::class, 'store']
-    )->name('resume.store');
+    // Rute untuk melihat detail resume
+    Route::get('/resume/{resume}', [BookResumeController::class, 'show'])->name('resume.show');
 
-    Route::get('/my-resumes',
-        [BookResumeController::class, 'myResumes']
-    )->name('resume.my');
+    // TAMBAHKAN DUA BARIS INI (Untuk halaman edit dan proses update)
+    Route::get('/resume/{resume}/edit', [BookResumeController::class, 'edit'])->name('resume.edit');
+    Route::put('/resume/{resume}', [BookResumeController::class, 'update'])->name('resume.update');
 
-    Route::get('/resume/{resume}',
-        [BookResumeController::class, 'show']
-    )->name('resume.show');
-
-    Route::delete('/resume/{resume}',
-        [BookResumeController::class, 'destroy']
-    )->name('resume.destroy');
+    // Rute untuk menghapus
+    Route::delete('/resume/{resume}', [BookResumeController::class, 'destroy'])->name('resume.destroy');
     /*
     |--------------------------------------------------------------------------
     | FAVORIT
@@ -329,25 +323,28 @@ Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium
         */
         Route::resource('/users', UserController::class);
 
+
         /*
         |--------------------------------------------------------------------------
         | REVIEWS
         |--------------------------------------------------------------------------
         */
-        Route::get('/reviews', [AdminReviewController::class, 'index'])
-            ->name('reviews.index');
+        Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+        
+        // TAMBAHKAN BARIS BARU INI:
+        Route::get('/reviews/{id}', [AdminReviewController::class, 'show'])->name('reviews.show');
 
-        Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])
-            ->name('reviews.destroy');
-
+        Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+        
         /*
         |--------------------------------------------------------------------------
         | FORUM
         |--------------------------------------------------------------------------
         */
-        Route::get('/forum', [AdminForumController::class, 'index'])
-            ->name('forum.index');
-
+        Route::get('/forum', [AdminForumController::class, 'index'])->name('forum.index');
+        // Arahkan ke AdminForumController dengan method detail, dan cukup beri nama 'forum.detail'
+        Route::get('/forum/{id}', [AdminForumController::class, 'detail'])->name('forum.detail');
+        Route::delete('/forum/{id}', [AdminForumController::class, 'destroy'])->name('forum.destroy');
         /*
         |--------------------------------------------------------------------------
         | GENRE & BUKU
