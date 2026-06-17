@@ -20,6 +20,8 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
         }
 
         /* Container Daftar Baris */
@@ -47,12 +49,22 @@
         }
 
         /* Pengaturan Lebar Kolom Flexbox */
-        .col-comment-user { flex: 1.2; display: flex; align-items: center; gap: 12px; }
-        .col-comment-text { flex: 2.5; color: #cbd5e1; font-size: 0.95rem; padding-right: 15px; }
-        .col-comment-source { flex: 1.8; display: flex; flex-direction: column; gap: 2px; }
+        .col-comment-user { flex: 1.2; display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .col-comment-text { flex: 2.5; color: #cbd5e1; font-size: 0.95rem; padding-right: 15px; min-width: 0; }
+        .col-comment-source { flex: 1.8; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
         .col-comment-actions { flex: 0.8; text-align: right; display: flex; justify-content: flex-end; }
 
-        /* Avatar Box Mini */
+        /* Sizing Akurat Foto Profil User (Mencegah Kebesaran) */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        /* Avatar Box Mini Fallback */
         .comment-avatar-box {
             width: 36px;
             height: 36px;
@@ -64,6 +76,7 @@
             justify-content: center;
             color: var(--muted);
             font-size: 0.85rem;
+            flex-shrink: 0;
         }
 
         /* Label Lokasi Buku & Halaman */
@@ -95,6 +108,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            cursor: pointer;
         }
         .btn-action-purge:hover {
             background: rgba(239, 68, 68, 0.1);
@@ -178,12 +192,23 @@
                 
                 {{-- KOLOM 1: INFO PENGGUNA --}}
                 <div class="col-comment-user">
-                    <div class="comment-avatar-box">
-                        <i class="fas fa-user-ninja"></i>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-white" style="font-size: 0.9rem;">{{ $k->user->username ?? '-' }}</div>
-                        <span class="text-muted font-monospace" style="font-size: 0.72rem; opacity: 0.7;">UID #{{ $k->user->id ?? '0' }}</span>
+                    @if($k->user && !empty($k->user->foto_profil))
+                        <img src="{{ asset('storage/' . $k->user->foto_profil) }}" class="user-avatar" alt="Profile">
+                    @elseif($k->user && !empty($k->user->profile_image))
+                        <img src="{{ asset('storage/' . $k->user->profile_image) }}" class="user-avatar" alt="Profile">
+                    @else
+                        <div class="comment-avatar-box">
+                            <i class="fas fa-user-ninja"></i>
+                        </div>
+                    @endif
+
+                    <div class="text-truncate">
+                        <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">
+                            {{ $k->user->username ?? '-' }}
+                        </div>
+                        <span class="text-muted font-monospace" style="font-size: 0.72rem; opacity: 0.7;">
+                            UID #{{ $k->user->id ?? '0' }}
+                        </span>
                     </div>
                 </div>
 
@@ -205,7 +230,7 @@
 
                 {{-- KOLOM 4: TOMBOL KONTROL HAPUS --}}
                 <div class="col-comment-actions">
-                    <form action="{{ route('admin.komentar.hapus', $k->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permanen komentar ini?')">
+                    <form action="{{ route('admin.komentar.hapus', $k->id) }}" method="POST" class="m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permanen komentar ini?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-action-purge">
@@ -219,7 +244,7 @@
             {{-- TAMPILAN JIKA DATA KOSONG --}}
             <div class="text-center py-5" style="background: var(--sidebar-bg); border: 1px dashed var(--border); border-radius: 12px;">
                 <div class="py-4 opacity-50">
-                    <i class="fas fa-comments-slash fa-2.5x mb-3 text-secondary"></i>
+                    <i class="fas fa-comments-slash fa-2x mb-3 text-secondary"></i>
                     <div class="small fw-semibold text-muted">Belum ada data komentar yang masuk dalam database.</div>
                 </div>
             </div>

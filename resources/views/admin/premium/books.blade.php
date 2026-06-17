@@ -5,6 +5,7 @@
 
 <div class="adm-wrap">
 
+    {{-- ================= TOPBAR HALAMAN ================= --}}
     <div class="adm-topbar">
         <div class="adm-title">
             <i class="ti ti-crown"></i>
@@ -29,6 +30,7 @@
         </div>
     @endif
 
+    {{-- ================= CONTAINER TABEL UTAMA ================= --}}
     <div class="adm-card">
         <table class="adm-table">
             <thead>
@@ -44,20 +46,19 @@
                 @forelse($books as $book)
                     <tr>
 
-                        {{-- Judul --}}
+                        {{-- Judul & Penulis --}}
                         <td>
                             <div class="book-info">
                                 <span class="book-title-cell">
                                     {{ $book->title }}
                                 </span>
-
                                 <span class="book-author-cell">
                                     {{ $book->author }}
                                 </span>
                             </div>
                         </td>
 
-                        {{-- Status --}}
+                        {{-- Status Premium / Biasa --}}
                         <td>
                             @if($book->is_premium)
                                 <span class="badge-premium">
@@ -71,7 +72,7 @@
                             @endif
                         </td>
 
-                        {{-- Poin --}}
+                        {{-- Nilai Poin Premium --}}
                         <td>
                             @if($book->is_premium)
                                 <span class="poin-val">
@@ -83,15 +84,15 @@
                             @endif
                         </td>
 
-                        {{-- Aksi --}}
+                        {{-- Kolompok Tombol Aksi --}}
                         <td>
                             <div class="aksi-row">
 
-                                {{-- Jadikan Premium --}}
+                                {{-- Kondisi 1: Jika Buku Belum Premium (Jadikan Premium) --}}
                                 @if(!$book->is_premium)
                                     <form action="{{ route('admin.premium.set', $book->id) }}"
                                           method="POST"
-                                          style="display:flex; gap:8px; align-items:center;">
+                                          style="display:flex; gap:8px; align-items:center; margin:0;">
                                         @csrf
 
                                         <input type="number"
@@ -107,21 +108,24 @@
                                         </button>
                                     </form>
                                 @else
+                                    {{-- Kondisi 2: Jika Buku Sudah Premium --}}
                                     <span class="txt-premium">
                                         <i class="ti ti-check"></i>
                                         Sudah Premium
                                     </span>
                                 @endif
 
-                                {{-- Hapus Premium --}}
+                                {{-- Tombol Batalkan / Hapus Status Premium --}}
                                 <form action="{{ route('admin.premium.destroy', $book->id) }}"
-                                      method="POST">
+                                      method="POST"
+                                      style="margin:0;">
                                     @csrf
                                     @method('DELETE')
 
                                     <button type="submit"
-                                            class="btn-hapus"
-                                            onclick="return confirm('Yakin hapus buku premium ini?')">
+                                            class="btn-generic btn-hapus"
+                                            style="cursor:pointer;"
+                                            onclick="return confirm('Yakin ingin menghapus status premium dari buku ini?')">
                                         <i class="ti ti-trash"></i>
                                         Hapus
                                     </button>
@@ -132,9 +136,10 @@
 
                     </tr>
                 @empty
+                    {{-- Tampilan jika tidak ada data buku --}}
                     <tr>
-                        <td colspan="4" class="adm-empty-row">
-                            Tidak ada data buku
+                        <td colspan="4" class="adm-empty-row" style="text-align:center; padding:20px;">
+                            Tidak ada data data buku yang tersedia.
                         </td>
                     </tr>
                 @endforelse
@@ -142,98 +147,6 @@
 
         </table>
     </div>
-  @endif
-
-  {{-- TABLE --}}
-  <div class="adm-card">
-    <table class="adm-table">
-      <thead>
-        <tr>
-          <th>Judul & Penulis</th>
-          <th>Status</th>
-          <th>Poin</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        @forelse($books as $book)
-        <tr>
-
-          {{-- TITLE --}}
-          <td>
-            <div class="book-info">
-              <span class="book-title-cell">{{ $book->title }}</span>
-              <span class="book-author-cell">{{ $book->author }}</span>
-            </div>
-          </td>
-
-          {{-- STATUS --}}
-          <td>
-            @if($book->is_premium)
-              <span class="badge-premium">
-                <i class="ti ti-crown"></i> Premium
-              </span>
-            @else
-              <span class="badge-biasa">Biasa</span>
-            @endif
-          </td>
-
-          {{-- POINT --}}
-          <td>
-            @if($book->is_premium)
-              <span class="poin-val">
-                <i class="ti ti-star"></i>
-                {{ number_format($book->premium_point) }}
-              </span>
-            @else
-              <span class="poin-dash">—</span>
-            @endif
-          </td>
-
-          {{-- ACTION --}}
-          <td>
-            <div class="aksi-row">
-
-              {{-- SET PREMIUM --}}
-              @if(!$book->is_premium)
-                <form action="{{ route('admin.premium.set', $book->id) }}"
-                      method="POST"
-                      style="display:flex; gap:8px; align-items:center;">
-                  @csrf
-
-                  <input type="number"
-                         name="premium_point"
-                         class="inp-poin"
-                         placeholder="Poin"
-                         min="1"
-                         required>
-
-                  <button type="submit" class="btn-set">
-                    <i class="ti ti-crown"></i> Jadikan Premium
-                  </button>
-                </form>
-              @else
-                <span class="txt-premium">
-                  <i class="ti ti-check"></i> Sudah Premium
-                </span>
-              @endif
-
-            </div>
-          </td>
-
-        </tr>
-        @empty
-        <tr>
-          <td colspan="4" style="text-align:center; padding:20px;">
-            Tidak ada data buku
-          </td>
-        </tr>
-        @endforelse
-      </tbody>
-
-    </table>
-  </div>
 
 </div>
 @endsection

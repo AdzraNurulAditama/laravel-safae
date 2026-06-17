@@ -332,8 +332,16 @@
                 <a href="#"
                    class="profile-btn"
                    data-bs-toggle="dropdown">
-                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->username }}&background=38bdf8&color=0f172a"
-                         alt="Profile">
+                   @if(Auth::user()->foto_profil)
+    <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}"
+         alt="Profile">
+@elseif(Auth::user()->profile_image)
+    <img src="{{ asset('storage/' . Auth::user()->profile_image) }}"
+         alt="Profile">
+@else
+    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->username }}&background=38bdf8&color=0f172a"
+         alt="Profile">
+@endif
                     <span class="profile-name">
                         {{ Auth::user()->username }}
                     </span>

@@ -79,6 +79,16 @@
             flex-shrink: 0;
         }
 
+        /* Sizing Akurat Foto Profil User (Mencegah Kebesaran) */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
         /* Tombol Kontrol */
         .btn-action-view {
             background: rgba(6, 182, 212, 0.08);
@@ -175,36 +185,42 @@
                 
                 {{-- KOLOM 1: INFO PENGGUNA --}}
                 <div class="col-fav-user">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
-                         style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); flex-shrink: 0;">
-                        <i class="fas fa-user" style="font-size: 0.85rem;"></i>
-                    </div>
+                    @if($fav->user && !empty($fav->user->foto_profil))
+                        <img src="{{ asset('storage/' . $fav->user->foto_profil) }}" class="user-avatar" alt="Profile">
+                    @elseif($fav->user && !empty($fav->user->profile_image))
+                        <img src="{{ asset('storage/' . $fav->user->profile_image) }}" class="user-avatar" alt="Profile">
+                    @else
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-muted"
+                             style="width: 36px; height: 36px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); flex-shrink: 0;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    @endif
+                    
                     <div class="text-truncate">
                         <div class="fw-bold text-white mb-0" style="font-size: 0.9rem;">{{ $fav->user->username ?? 'Unknown' }}</div>
                         <span class="text-muted font-monospace" style="font-size: 0.72rem; opacity: 0.7;">FAV_ID #{{ $fav->id }}</span>
                     </div>
-                </div>
+                </div> {{-- Penutup tag div kolom 1 yang sebelumnya hilang --}}
 
                 {{-- KOLOM 2: DETAIL DATA BUKU + COVER IMAGE PATH LOADER --}}
                 <div class="col-fav-book">
                     <div class="d-flex align-items-center gap-3">
-                        
-                        {{-- Logika pengambilan file gambar dari subfolder covers --}}
+                    
                         @if($fav->book && !empty($fav->book->image_path))
-                    <img src="{{ asset(ltrim($fav->book->image_path, '/')) }}"
-                            class="book-cover-preview"
-                            alt="Cover">
+    <img src="{{ asset(ltrim($fav->book->image_path, '/')) }}"
+         class="book-cover-preview"
+         alt="Cover">
 
-                    @elseif($fav->book && !empty($fav->book->cover_image))
-                        <img src="{{ asset($fav->book->cover_image) }}"
-                            class="book-cover-preview"
-                            alt="Cover">
+@elseif($fav->book && !empty($fav->book->cover_image))
+    <img src="{{ asset($fav->book->cover_image) }}"
+         class="book-cover-preview"
+         alt="Cover">
 
-                    @else
-                        <div class="book-icon-fallback">
-                            <i class="fas fa-book"></i>
-                        </div>
-                    @endif
+@else
+    <div class="book-icon-fallback">
+        <i class="fas fa-book"></i>
+    </div>
+@endif
 
                         <div class="text-truncate">
                             <div class="text-white fw-bold text-truncate" style="font-size: 0.95rem;" title="{{ $fav->book->title ?? 'Buku Telah Dihapus' }}">

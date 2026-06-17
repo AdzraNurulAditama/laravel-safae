@@ -44,12 +44,23 @@
         .reward-row-card:hover {
             border-color: rgba(6, 182, 212, 0.3);
             background: rgba(17, 24, 39, 0.6);
+            transform: translateY(-1px);
         }
 
         /* Pembagian Lebar Kolom Flexbox Semuanya Simetris */
         .col-reward-user { flex: 2; display: flex; align-items: center; gap: 14px; min-width: 0; }
         .col-reward-points { flex: 0.8; display: flex; align-items: center; }
         .col-reward-actions { flex: 2.2; display: flex; justify-content: flex-end; align-items: center; gap: 12px; }
+
+        /* Sizing Akurat Foto Profil User (Mencegah Kebesaran) */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
 
         /* Badge Informasi Total Poin */
         .points-display-badge {
@@ -115,6 +126,7 @@
             align-items: center;
             gap: 4px;
             height: 28px;
+            cursor: pointer;
         }
 
         .btn-console-add {
@@ -192,10 +204,16 @@
                 
                 {{-- KOLOM 1: INFO PENGGUNA --}}
                 <div class="col-reward-user">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-primary"
-                         style="width: 38px; height: 38px; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.12); flex-shrink: 0;">
-                        <i class="fas fa-user-tag" style="font-size: 0.9rem;"></i>
-                    </div>
+                    @if($user && !empty($user->foto_profil))
+                        <img src="{{ asset('storage/' . $user->foto_profil) }}" class="user-avatar" alt="Profile">
+                    @elseif($user && !empty($user->profile_image))
+                        <img src="{{ asset('storage/' . $user->profile_image) }}" class="user-avatar" alt="Profile">
+                    @else
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-primary"
+                            style="width: 36px; height: 36px; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.12); flex-shrink: 0;">
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                    @endif
                     <div class="text-truncate">
                         <div class="fw-bold text-white mb-0" style="font-size: 0.95rem;">{{ $user->username }}</div>
                         <span class="text-muted small d-block text-truncate" style="font-size: 0.8rem; max-width: 250px;">{{ $user->email }}</span>
@@ -244,7 +262,7 @@
             {{-- TAMPILAN JIKA DATA USER KOSONG --}}
             <div class="text-center py-5" style="background: var(--sidebar-bg); border: 1px dashed var(--border); border-radius: 12px;">
                 <div class="py-4 opacity-50">
-                    <i class="fas fa-users-slash fa-2.5x mb-3 text-secondary"></i>
+                    <i class="fas fa-users-slash fa-2x mb-3 text-secondary"></i>
                     <div class="small fw-semibold text-muted">Belum ada data pengguna yang terdaftar.</div>
                 </div>
             </div>
