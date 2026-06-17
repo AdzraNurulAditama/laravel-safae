@@ -285,6 +285,10 @@ Route::middleware(['auth', AdminOnly::class])
     ->name('admin.')
     ->group(function () {
 
+         Route::post('/premium-books/{book}/set',
+        [AdminPremiumController::class, 'setPremium'])
+        ->name('premium.set');
+
         Route::get('/', [AdminController::class, 'index'])
             ->name('dashboard');
 
@@ -293,8 +297,7 @@ Route::middleware(['auth', AdminOnly::class])
     [AdminPremiumController::class, 'destroy']
 )->name('premium.destroy');
 
-Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium'])
-    ->name('premium.set');
+
        
         /*
         |--------------------------------------------------------------------------
@@ -438,7 +441,8 @@ Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium
 Route::post('/buku-premium/{book}/tukar', [PremiumBookController::class, 'tukar'])
     ->name('premium.tukar');
 
-Route::post('/premium-books/{book}', [AdminPremiumController::class, 'setPremium'])
+Route::post('/admin/premium-books/{book}/set',
+    [AdminPremiumController::class, 'setPremium'])
     ->name('premium.set');
 
 Route::delete(
