@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Services\RecommendationService;
 use Illuminate\Support\Facades\File;
 
 use App\Http\Controllers\AuthController;

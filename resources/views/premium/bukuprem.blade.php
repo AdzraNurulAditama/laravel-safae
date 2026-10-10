@@ -13,7 +13,7 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="favorite-header mb-1 text-white" style="color: #ffffff !important;">
-                <i class="fa-solid fa-crown text-warning me-2"></i> Toko Buku Premium
+                <i class="fa-solid fa-crown text-warning me-2"></i> Buku Premium
             </h3>
             <p class="text-white small mb-0" style="opacity: 0.85; font-size: 0.9rem; color: #ffffff !important;">Tukarkan poin reward membaca kamu untuk membuka akses konten-konten premium eksklusif.</p>
         </div>
